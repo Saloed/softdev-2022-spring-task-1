@@ -1,8 +1,8 @@
-# Шаблон репозитория для курсов по программированию
+# Базовый репозиторий для задания №1
 
 ## Инструкция
 1. Сделайте [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) репозитория
-2. Настройте систему сборки [maven](https://maven.apache.org/) или [gradle](https://gradle.org/)
+2. ~~Настройте систему сборки [maven](https://maven.apache.org/) или [gradle](https://gradle.org/)~~
     * [Работа с maven в IDEA](https://www.jetbrains.com/help/idea/maven-support.html)
     * [Работа с gradle в IDEA](https://www.jetbrains.com/help/idea/gradle.html)
 3. Используйте этот репозиторий в процессе работы над своей задачей. Весь код и необходимые артефакты
