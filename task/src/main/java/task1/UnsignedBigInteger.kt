@@ -23,11 +23,9 @@ class UnsignedBigInteger(private val number: MutableList<Int> = mutableListOf())
         private fun fromString(s: String): MutableList<Int> {
             if (!s.matches(Regex("""\d+""")))
                 throw NumberFormatException(WRONG_FORMAT)
-            return mutableListOf<Int>().apply {
-                s.forEach { digit ->
-                    add(digit.digitToInt())
-                }
-            }
+            return s.map {
+                it.digitToInt()
+            }.toMutableList()
         }
 
         private fun fromInt(i: Int): MutableList<Int> =
@@ -101,7 +99,6 @@ class UnsignedBigInteger(private val number: MutableList<Int> = mutableListOf())
      */
     operator fun minus(other: UnsignedBigInteger): UnsignedBigInteger =
         when {
-            other == UnsignedBigInteger(0) -> throw ArithmeticException(DIVISION_BY_ZERO)
             this < other -> throw ArithmeticException(DIVIDEND_LESS)
             else ->
                 buildUnsignedBigInteger({
