@@ -12,31 +12,31 @@ package task1
  * сравнение на равенство и неравенство
  */
 
-class UnsignedBigInteger(private val number: MutableList<Int> = mutableListOf()) : Comparable<UnsignedBigInteger> {
+class UnsignedBigInteger(private val number: MutableList<UInt> = mutableListOf()) : Comparable<UnsignedBigInteger> {
 
     companion object {
         private const val WRONG_FORMAT = "wrong number format"
         private const val OUT_OF_BOUNDS = "number is out of bounds Int"
         private const val DIVISION_BY_ZERO = "Division by zero"
-        private const val DIVIDEND_LESS = "Dividend less than divisor"
+        private const val CALCULATED_LESS = "Calculated less than reduced"
 
-        private fun fromString(s: String): MutableList<Int> {
+        private fun fromString(s: String): MutableList<UInt> {
             if (!s.matches(Regex("""\d+""")))
                 throw NumberFormatException(WRONG_FORMAT)
             return s.map {
-                it.digitToInt()
+                it.digitToInt().toUInt()
             }.toMutableList()
         }
 
-        private fun fromInt(i: Int): MutableList<Int> =
-            mutableListOf<Int>().apply {
+        private fun fromInt(i: Int): MutableList<UInt> =
+            mutableListOf<UInt>().apply {
                 when {
                     i < 0 -> throw NumberFormatException(WRONG_FORMAT)
-                    i == 0 -> add(0)
+                    i == 0 -> add(0u)
                     else -> {
                         var n = i
                         while (n != 0) {
-                            add(n % 10)
+                            add((n % 10).toUInt())
                             n /= 10
                         }
                     }
@@ -50,17 +50,17 @@ class UnsignedBigInteger(private val number: MutableList<Int> = mutableListOf())
             if (a < b) a else b
 
         private fun buildUnsignedBigInteger(
-            action: MutableList<Int>.() -> Unit,
+            action: MutableList<UInt>.() -> Unit,
             reverse: Boolean = true
         ): UnsignedBigInteger {
-            val list = mutableListOf<Int>().apply(action)
+            val list = mutableListOf<UInt>().apply(action)
             return if (reverse) UnsignedBigInteger(list.asReversed()) else UnsignedBigInteger(list)
         }
     }
 
     init {
         if (number.size != 0) {
-            while (number[0] == 0 && number.size != 1) {
+            while (number[0] == 0u && number.size != 1) {
                 number.removeFirst()
             }
         }
@@ -83,13 +83,14 @@ class UnsignedBigInteger(private val number: MutableList<Int> = mutableListOf())
         val big = max(this, other).number
         val small = min(this, other).number
         return buildUnsignedBigInteger({
-            var memory = 0
+            var memory = 0u
             for (i in big.lastIndex downTo 0) {
-                val d = big[i] + small.getOrElse(i - (big.size - small.size)) { 0 } + memory
-                add(d % 10)
-                memory = d / 10
+                val d = big[i] + small.getOrElse(i - (big.size - small.size)) { 0u } + memory
+                add(d)
+                memory =
+                    if (d < big[i] && memory == 0u || d <= big[i] && memory == 1u) 1u else 0u
             }
-            if (memory > 0)
+            if (memory > 0u)
                 add(memory)
         })
     }
@@ -99,20 +100,15 @@ class UnsignedBigInteger(private val number: MutableList<Int> = mutableListOf())
      */
     operator fun minus(other: UnsignedBigInteger): UnsignedBigInteger =
         when {
-            this < other -> throw ArithmeticException(DIVIDEND_LESS)
+            this < other -> throw ArithmeticException(CALCULATED_LESS)
             else ->
                 buildUnsignedBigInteger({
-                    var memory = 0
+                    var memory = 0u
                     for (i in number.lastIndex downTo 0) {
-                        var d =
-                            number[i] - other.number.getOrElse(i - (number.size - other.number.size)) { 0 } - memory
-                        if (d < 0) {
-                            d += 10
-                            memory = 1
-                        } else {
-                            memory = 0
-                        }
-                        add(d % 10)
+                        val d =
+                            number[i] - other.number.getOrElse(i - (number.size - other.number.size)) { 0u } - memory
+                        memory = if (d > number[i] && memory == 0u || d >= number[i] && memory == 1u) 1u else 0u
+                        add(d)
                     }
                 })
         }
@@ -127,16 +123,16 @@ class UnsignedBigInteger(private val number: MutableList<Int> = mutableListOf())
         var countOfZeros = 0
         for (i in small.lastIndex downTo 0) {
             result += buildUnsignedBigInteger({
-                var memory = 0
+                var memory = 0u
                 for (j in big.lastIndex downTo 0) {
-                    val d = big[j] * small.getOrElse(i) { 0 } + memory
-                    add(d % 10)
-                    memory = d / 10
+                    val d = big[j] * small.getOrElse(i) { 0u } + memory
+                    add(d)
+//                    memory = ?
                 }
-                if (memory > 0)
+                if (memory > 0u)
                     add(memory)
                 reverse()
-                repeat(countOfZeros) { add(0) }
+                repeat(countOfZeros) { add(0u) }
                 countOfZeros++
             }, reverse = false)
         }
@@ -153,26 +149,26 @@ class UnsignedBigInteger(private val number: MutableList<Int> = mutableListOf())
             else -> {
                 buildUnsignedBigInteger(
                     {
-                        var temporary = mutableListOf<Int>()
+                        var temporary = mutableListOf<UInt>()
                         var afterFirstDivision = false
                         for (i in 0 until number.size + 1) {
                             if (UnsignedBigInteger(temporary) < other) {
                                 number.getOrNull(i)?.let { temporary.add(it) }
                                 if (afterFirstDivision)
-                                    add(0)
+                                    add(0u)
                             } else {
-                                var digit = 0
-                                var current = mutableListOf<Int>()
-                                while (UnsignedBigInteger(current) < UnsignedBigInteger(temporary)) {
-                                    val possible = UnsignedBigInteger(current) + other
+                                var digit = 0u
+                                var current = UnsignedBigInteger(mutableListOf())
+                                while (current< UnsignedBigInteger(temporary)) {
+                                    val possible = current + other
                                     if (possible == UnsignedBigInteger(temporary)) {
                                         temporary.clear()
-                                        add(digit + 1)
+                                        add(digit + 1u)
                                     } else if (possible > UnsignedBigInteger(temporary)) {
-                                        temporary = (UnsignedBigInteger(temporary) - UnsignedBigInteger(current)).number
+                                        temporary = (UnsignedBigInteger(temporary) - current).number
                                         add(digit)
                                     }
-                                    current = possible.number
+                                    current = possible
                                     digit++
                                 }
                                 number.getOrNull(i)?.let { temporary.add(it) }
@@ -221,17 +217,10 @@ class UnsignedBigInteger(private val number: MutableList<Int> = mutableListOf())
      * Преобразование в целое
      * Если число не влезает в диапазон Int, бросить ArithmeticException
      */
-    fun toInt(): Int {
-        if (this > UnsignedBigInteger(Int.MAX_VALUE))
-            throw ArithmeticException(OUT_OF_BOUNDS)
-        var result = 0
-        var fraction = 1
-        for (i in number.lastIndex downTo 0) {
-            result += number[i] * fraction
-            fraction *= 10
-        }
-        return result
-    }
+    fun toInt(): Int = this.toString().toIntOrNull() ?: throw ArithmeticException(OUT_OF_BOUNDS)
 
     override fun hashCode(): Int = number.hashCode()
+}
+
+fun main() {
 }

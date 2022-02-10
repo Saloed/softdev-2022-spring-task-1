@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    kotlin("jvm") version "1.6.20-M1"
+    kotlin("jvm") version "1.6.10"
 }
 
 repositories {
