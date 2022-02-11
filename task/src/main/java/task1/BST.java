@@ -25,7 +25,10 @@ public class BST {
 
     private Node addRec(Node cur, int val, Node par) {
         if (cur == null) {
-            return new Node(val, par);
+            cur = new Node(val, par);
+            if (cur.value < par.value) par.right = cur;
+            else par.left = cur;
+            return cur;
         }
         if (val < cur.value) {
             cur.left = addRec(cur.left, val, cur);
