@@ -2,13 +2,14 @@ package task1;
 
 public class BST {
 
-    class Node {
+    static class Node {
         int value;
         Node parent;
         Node left;
         Node right;
 
-        Node(int value) {
+        Node(int value, Node parent) {
+            this.parent = null;
             this.value = value;
             right = null;
             left = null;
@@ -18,18 +19,18 @@ public class BST {
     Node root;
 
     public void add(int val) {
-        root = addRec(root, val);
+        root = addRec(root, val, null);
     }
 
-    private Node addRec(Node cur, int val) {
-        if (cur == null) {
-            return new Node(val);
-        }
 
+    private Node addRec(Node cur, int val, Node par) {
+        if (cur == null) {
+            return new Node(val, par);
+        }
         if (val < cur.value) {
-            cur.left = addRec(cur.left, val);
+            cur.left = addRec(cur.left, val, cur);
         } else if (val > cur.value) {
-            cur.right = addRec(cur.right, val);
+            cur.right = addRec(cur.right, val, cur);
         } else {
 
             return cur;
