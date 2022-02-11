@@ -1,6 +1,15 @@
 package task1;
 
+
 public class BST {
+
+
+    BST(String str) {
+        String[] array = str.split(" ");
+        for (String s : array) {
+            add(Integer.parseInt(String.valueOf(s)));
+        }
+    }
 
     static class Node {
         int value;
@@ -9,37 +18,36 @@ public class BST {
         Node right;
 
         Node(int value, Node parent) {
-            this.parent = null;
+            this.parent = parent;
             this.value = value;
             right = null;
             left = null;
         }
     }
 
-    Node root;
+    private Node root;
 
     public void add(int val) {
-        root = addRec(root, val, null);
+        addRec(root, val, null);
     }
 
 
-    private Node addRec(Node cur, int val, Node par) {
+    private void addRec(Node cur, int val, Node par) {
+        if (root == null) {
+            root = new Node(val, null);
+            return;
+        }
         if (cur == null) {
             cur = new Node(val, par);
-            if (cur.value < par.value) par.right = cur;
-            else par.left = cur;
-            return cur;
+            if (cur.value < par.value) par.left = cur;
+            else par.right = cur;
+            return;
         }
         if (val < cur.value) {
-            cur.left = addRec(cur.left, val, cur);
+            addRec(cur.left, val, cur);
         } else if (val > cur.value) {
-            cur.right = addRec(cur.right, val, cur);
-        } else {
-
-            return cur;
+            addRec(cur.right, val, cur);
         }
-
-        return cur;
     }
 
     public Node search(int val) {
@@ -54,20 +62,35 @@ public class BST {
 
     public void delete(int val) {
         if (this.search(val) != null) return;
-        boolean DNK = true;
         Node cur = search(val);
-        if (cur.parent.right == cur) DNK = false;
+        boolean isLeft = true;
+        if (cur != root) {
+            isLeft = cur.parent.left == cur;
+        }
         Node del = cur;
         if (cur.left == null && cur.right == null) {
-            if (DNK) cur.parent.left = null;
+            if (cur == root) {
+                root = null;
+                return;
+            }
+            if (isLeft){
+                cur.parent.left = null;
+            }
             else cur.parent.right = null;
-        }
-        else if (cur.right == null) {
-            if (DNK) cur.parent.left = cur.left;
+        } else if (cur.right == null) {
+            if (cur == root) {
+                root = cur.left;
+                return;
+            }
+            if (isLeft) cur.parent.left = cur.left;
             else cur.parent.right = cur.left;
             cur.left.parent = cur.parent;
         } else if (cur.left == null) {
-            if (DNK) cur.parent.left = cur.right;
+            if (cur == root) {
+                root = cur.right;
+                return;
+            }
+            if (isLeft) cur.parent.left = cur.right;
             else cur.parent.right = cur.right;
             cur.right.parent = cur.parent;
         } else {
@@ -75,19 +98,47 @@ public class BST {
             while (cur.left != null) {
                 cur = cur.left;
             }
-            del.value = cur.value;
+            cur.value = del.value;
+            cur.parent = del.parent;
+            cur.left = del.left;
+            cur.right = del.right;
         }
     }
-    public String findNeighbour(int val){
+
+    public String showNeighbours(int val) {
         Node cur = search(val);
+        String par = "-";
+        String l = "-";
+        String r = "-";
+        if (cur.parent != null) par = String.valueOf(cur.parent.value);
+        if (cur.left != null) l = String.valueOf(cur.left.value);
+        if (cur.right != null) r = String.valueOf(cur.right.value);
         return "Предок: " +
-                cur.parent +
+                par +
                 ",\nЛевый потомок: " +
-                cur.left +
+                l +
                 ",\nПравый потомок: " +
-                cur.right +
+                r +
                 ".";
     }
+
+    public String showTree() {
+        treeCounter(root, sb);
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
+    StringBuilder sb = new StringBuilder();
+
+    private void treeCounter(Node cur, StringBuilder sb) {
+        if (cur != null) {
+            sb.append(cur.value);
+            sb.append(" ");
+            treeCounter(cur.left, sb);
+            treeCounter(cur.right, sb);
+        }
+    }
+
 }
 
 
