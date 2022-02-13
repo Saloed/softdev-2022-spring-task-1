@@ -61,7 +61,7 @@ public class BST {
     }
 
     public void delete(int val) {
-        if (this.search(val) != null) return;
+        if (this.search(val) == null) return;
         Node cur = search(val);
         boolean isLeft = true;
         if (cur != root) {
@@ -73,10 +73,9 @@ public class BST {
                 root = null;
                 return;
             }
-            if (isLeft){
+            if (isLeft) {
                 cur.parent.left = null;
-            }
-            else cur.parent.right = null;
+            } else cur.parent.right = null;
         } else if (cur.right == null) {
             if (cur == root) {
                 root = cur.left;
@@ -98,10 +97,7 @@ public class BST {
             while (cur.left != null) {
                 cur = cur.left;
             }
-            cur.value = del.value;
-            cur.parent = del.parent;
-            cur.left = del.left;
-            cur.right = del.right;
+            del.value = cur.value;
         }
     }
 

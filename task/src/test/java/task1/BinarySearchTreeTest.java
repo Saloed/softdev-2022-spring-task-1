@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
     public class BinarySearchTreeTest {
 
     @Test
-    public void TestBST1(){
+    public void addTest(){
         BST tester = new BST("7 3 9 2 5 8 10 1 6");
         tester.add(4);
         String expectation = "7 3 2 1 5 4 6 9 8 10";
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
     @Test
-    public void TestBST2(){
+    public void searchTest(){
         BST tester = new BST("7 3 9 2 5 8 10 1 4 6");
         assertEquals(4, tester.search(4).value);
         assertNull(tester.search(11));
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
     @Test
-    public void TestBST3(){
+    public void showNeighboursTest(){
         BST tester = new BST("7 3 9 2 5 8 10 1 4 6");
         String expectation = tester.showNeighbours(7);
         assertEquals(expectation,"Предок: " +
@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
         @Test
-        public void TestBST4() {
+        public void deleteTest() {
             BST tester = new BST("7 3 9 2 5 8 10 1 4 6");
             tester.delete(1);
             String expectation = "7 3 2 5 4 6 9 8 10";
