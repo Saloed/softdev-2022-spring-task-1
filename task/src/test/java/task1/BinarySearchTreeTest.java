@@ -1,6 +1,10 @@
 package task1;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
     public class BinarySearchTreeTest {
@@ -10,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
         BST tester = new BST("7 3 9 2 5 8 10 1 6");
         tester.add(4);
         String expectation = "7 3 2 1 5 4 6 9 8 10";
-        assertEquals(expectation, tester.showTree());
+        assertEquals(expectation, tester.toString());
     }
 
     @Test
@@ -24,30 +28,15 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     public void showNeighboursTest(){
         BST tester = new BST("7 3 9 2 5 8 10 1 4 6");
-        String expectation = tester.showNeighbours(7);
-        assertEquals(expectation,"Предок: " +
-                "-" +
-                ",\nЛевый потомок: " +
-                3 +
-                ",\nПравый потомок: " +
-                9 +
-                ".");
-        expectation = tester.showNeighbours(5);
-        assertEquals(expectation,"Предок: " +
-                3 +
-                ",\nЛевый потомок: " +
-                4 +
-                ",\nПравый потомок: " +
-                6 +
-                ".");
-        expectation = tester.showNeighbours(1);
-        assertEquals(expectation,"Предок: " +
-                2 +
-                ",\nЛевый потомок: " +
-                "-" +
-                ",\nПравый потомок: " +
-                "-" +
-                ".");
+        List<Integer> expectation = new ArrayList<>();
+        expectation.add(3);
+        expectation.add(4);
+        expectation.add(6);
+        List<Integer> betweener = new ArrayList<>();
+        for (BST.Node cur : tester.showNeighbours(5)){
+            if (cur!=null) betweener.add(cur.value);
+        }
+        assertEquals(expectation, betweener);
     }
 
         @Test
@@ -55,6 +44,6 @@ import static org.junit.jupiter.api.Assertions.*;
             BST tester = new BST("7 3 9 2 5 8 10 1 4 6");
             tester.delete(1);
             String expectation = "7 3 2 5 4 6 9 8 10";
-            assertEquals(expectation, tester.showTree());
+            assertEquals(expectation, tester.toString());
         }
 }

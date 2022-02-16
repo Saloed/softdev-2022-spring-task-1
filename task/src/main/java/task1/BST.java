@@ -1,6 +1,9 @@
 package task1;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BST {
 
 
@@ -61,8 +64,8 @@ public class BST {
     }
 
     public void delete(int val) {
-        if (this.search(val) == null) return;
         Node cur = search(val);
+        if (cur == null) return;
         boolean isLeft = true;
         if (cur != root) {
             isLeft = cur.parent.left == cur;
@@ -98,27 +101,22 @@ public class BST {
                 cur = cur.left;
             }
             del.value = cur.value;
+            cur = null;
         }
     }
 
-    public String showNeighbours(int val) {
+    public List<Node> showNeighbours(int val) {
         Node cur = search(val);
-        String par = "-";
-        String l = "-";
-        String r = "-";
-        if (cur.parent != null) par = String.valueOf(cur.parent.value);
-        if (cur.left != null) l = String.valueOf(cur.left.value);
-        if (cur.right != null) r = String.valueOf(cur.right.value);
-        return "Предок: " +
-                par +
-                ",\nЛевый потомок: " +
-                l +
-                ",\nПравый потомок: " +
-                r +
-                ".";
+        List<Node> result = new ArrayList<>();
+        result.add(cur.parent);
+        result.add(cur.left);
+        result.add(cur.right);
+        return result;
     }
 
-    public String showTree() {
+
+    @Override
+    public String toString() {
         treeCounter(root, sb);
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
@@ -136,5 +134,4 @@ public class BST {
     }
 
 }
-
 
