@@ -76,8 +76,7 @@ public class BST {
         return null;
     }
 
-    public void delete(int val) {
-        Node cur = search(val);
+    public void delete(Node cur) {
         if (cur == null) return;
         boolean isLeft = true;
         if (cur != root) {
@@ -114,7 +113,7 @@ public class BST {
                 cur = cur.left;
             }
             int between = cur.value;
-            delete(cur.value);
+            delete(cur);
             del.value = between;
         }
     }
