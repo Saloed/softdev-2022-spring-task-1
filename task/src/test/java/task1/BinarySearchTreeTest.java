@@ -39,5 +39,8 @@ import static org.junit.jupiter.api.Assertions.*;
             tester.delete(1);
             String expectation = "7 3 2 5 4 6 9 8 10";
             assertEquals(expectation, tester.toString());
+            tester.delete(5);
+            expectation = "7 3 2 6 4 9 8 10";
+            assertEquals(expectation, tester.toString());
         }
 }

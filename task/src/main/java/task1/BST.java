@@ -26,9 +26,18 @@ public class BST {
             right = null;
             left = null;
         }
-        public Node showParent(){ return parent;}
-        public Node showLeft(){ return left;}
-        public Node showRight(){ return right;}
+
+        public Node showParent() {
+            return parent;
+        }
+
+        public Node showLeft() {
+            return left;
+        }
+
+        public Node showRight() {
+            return right;
+        }
 
     }
 
@@ -104,8 +113,9 @@ public class BST {
             while (cur.left != null) {
                 cur = cur.left;
             }
-            del.value = cur.value;
+            int between = cur.value;
             delete(cur.value);
+            del.value = between;
         }
     }
 
@@ -114,7 +124,9 @@ public class BST {
     public String toString() {
         treeCounter(root, sb);
         sb.deleteCharAt(sb.length() - 1);
-        return sb.toString();
+        String result = sb.toString();
+        sb.delete(0, sb.length());
+        return result;
     }
 
     StringBuilder sb = new StringBuilder();
