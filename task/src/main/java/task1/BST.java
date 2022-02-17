@@ -105,13 +105,19 @@ public class BST {
         }
     }
 
-    public List<Node> showNeighbours(int val) {
-        Node cur = search(val);
-        List<Node> result = new ArrayList<>();
-        result.add(cur.parent);
-        result.add(cur.left);
-        result.add(cur.right);
-        return result;
+    public Node showParent(Node cur) {
+        if (cur != null && cur.parent != null) return cur.parent;
+        else return null;
+    }
+
+    public Node showLeft(Node cur) {
+        if (cur != null && cur.left != null) return cur.left;
+        else return null;
+    }
+
+    public Node showRight(Node cur) {
+        if (cur != null && cur.right != null) return cur.right;
+        else return null;
     }
 
 

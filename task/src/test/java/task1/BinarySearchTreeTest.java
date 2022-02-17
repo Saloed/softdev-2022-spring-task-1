@@ -28,15 +28,9 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     public void showNeighboursTest(){
         BST tester = new BST("7 3 9 2 5 8 10 1 4 6");
-        List<Integer> expectation = new ArrayList<>();
-        expectation.add(3);
-        expectation.add(4);
-        expectation.add(6);
-        List<Integer> betweener = new ArrayList<>();
-        for (BST.Node cur : tester.showNeighbours(5)){
-            if (cur!=null) betweener.add(cur.value);
-        }
-        assertEquals(expectation, betweener);
+        assertEquals(3, tester.showLeft(tester.search(7)).value);
+        assertNull(tester.showParent(tester.search(7)));
+        assertEquals(5, tester.showRight(tester.search(3)).value);
     }
 
         @Test
