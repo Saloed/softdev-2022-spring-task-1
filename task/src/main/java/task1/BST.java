@@ -26,6 +26,10 @@ public class BST {
             right = null;
             left = null;
         }
+        public Node showParent(){ return parent;}
+        public Node showLeft(){ return left;}
+        public Node showRight(){ return right;}
+
     }
 
     private Node root;
@@ -101,23 +105,8 @@ public class BST {
                 cur = cur.left;
             }
             del.value = cur.value;
-            cur = null;
+            delete(cur.value);
         }
-    }
-
-    public Node showParent(Node cur) {
-        if (cur != null && cur.parent != null) return cur.parent;
-        else return null;
-    }
-
-    public Node showLeft(Node cur) {
-        if (cur != null && cur.left != null) return cur.left;
-        else return null;
-    }
-
-    public Node showRight(Node cur) {
-        if (cur != null && cur.right != null) return cur.right;
-        else return null;
     }
 
 

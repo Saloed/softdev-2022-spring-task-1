@@ -28,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     public void showNeighboursTest(){
         BST tester = new BST("7 3 9 2 5 8 10 1 4 6");
-        assertEquals(3, tester.showLeft(tester.search(7)).value);
-        assertNull(tester.showParent(tester.search(7)));
-        assertEquals(5, tester.showRight(tester.search(3)).value);
+        assertEquals(3, tester.search(7).showLeft().value);
+        assertNull(tester.search(7).showParent());
+        assertEquals(5,tester.search(3).showRight().value);
     }
 
         @Test
