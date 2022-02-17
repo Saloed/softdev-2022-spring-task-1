@@ -15,33 +15,50 @@ package task1
 class UnsignedBigInteger(private val number: MutableList<UInt> = mutableListOf()) : Comparable<UnsignedBigInteger> {
 
     companion object {
+        private val BASE = UInt.MAX_VALUE.toULong() + 1UL
+
         private const val WRONG_FORMAT = "wrong number format"
         private const val OUT_OF_BOUNDS = "number is out of bounds Int"
         private const val DIVISION_BY_ZERO = "Division by zero"
         private const val CALCULATED_LESS = "Calculated less than reduced"
 
         private fun fromString(s: String): MutableList<UInt> {
+
             if (!s.matches(Regex("""\d+""")))
                 throw NumberFormatException(WRONG_FORMAT)
-            return s.map {
-                it.digitToInt().toUInt()
-            }.toMutableList()
+
+            return mutableListOf<UInt>().apply {
+                val current = StringBuilder()
+
+                fun workWithDigits() {
+                    while (current[0] == '0' && current.length != 1) {
+                        current.deleteCharAt(0)
+                        add(0u)
+                    }
+                }
+
+                fun addDigit() {
+                    add(current.toString().toUInt())
+                }
+
+                for (n in s) {
+                    current.append(n)
+                    if (current.toString().toUIntOrNull() == null) {
+                        workWithDigits()
+                        val last = current.last()
+                        current.deleteCharAt(current.lastIndex)
+                        addDigit()
+                        current.clear()
+                        current.append(last)
+                    }
+                }
+                workWithDigits()
+                addDigit()
+            }
         }
 
         private fun fromInt(i: Int): MutableList<UInt> =
-            mutableListOf<UInt>().apply {
-                when {
-                    i < 0 -> throw NumberFormatException(WRONG_FORMAT)
-                    i == 0 -> add(0u)
-                    else -> {
-                        var n = i
-                        while (n != 0) {
-                            add((n % 10).toUInt())
-                            n /= 10
-                        }
-                    }
-                }
-            }.asReversed()
+            mutableListOf<UInt>().apply { add(i.toUInt()) }
 
         fun max(a: UnsignedBigInteger, b: UnsignedBigInteger) =
             if (a > b) a else b
@@ -125,9 +142,10 @@ class UnsignedBigInteger(private val number: MutableList<UInt> = mutableListOf()
             result += buildUnsignedBigInteger({
                 var memory = 0u
                 for (j in big.lastIndex downTo 0) {
-                    val d = big[j] * small.getOrElse(i) { 0u } + memory
-                    add(d)
-//                    memory = ?
+                    val d = big[j].toULong() * small.getOrElse(i) { 0u }.toULong() + memory.toULong()
+
+                    add((d % BASE).toUInt())
+                    memory = (d / BASE).toUInt()
                 }
                 if (memory > 0u)
                     add(memory)
@@ -146,34 +164,43 @@ class UnsignedBigInteger(private val number: MutableList<UInt> = mutableListOf()
         when {
             other > this -> UnsignedBigInteger(0)
             other == UnsignedBigInteger(0) -> throw ArithmeticException(DIVISION_BY_ZERO)
+            number.size == 1 && other.number.size == 1 -> UnsignedBigInteger(mutableListOf(number[0] / other.number[0]))
             else -> {
                 buildUnsignedBigInteger(
                     {
-                        var temporary = mutableListOf<UInt>()
+                        var temporary = UnsignedBigInteger()
                         var afterFirstDivision = false
                         for (i in 0 until number.size + 1) {
-                            if (UnsignedBigInteger(temporary) < other) {
-                                number.getOrNull(i)?.let { temporary.add(it) }
+                            if (temporary < other) {
+                                number.getOrNull(i)?.let { temporary.number.add(it) }
                                 if (afterFirstDivision)
                                     add(0u)
                             } else {
+                                var minDigit = 0UL
+                                var maxDigit = BASE - 1UL
                                 var digit = 0u
-                                var current = UnsignedBigInteger(mutableListOf())
-                                while (current< UnsignedBigInteger(temporary)) {
-                                    val possible = current + other
-                                    if (possible == UnsignedBigInteger(temporary)) {
-                                        temporary.clear()
-                                        add(digit + 1u)
-                                    } else if (possible > UnsignedBigInteger(temporary)) {
-                                        temporary = (UnsignedBigInteger(temporary) - current).number
-                                        add(digit)
+                                while (minDigit <= maxDigit) {
+                                    val middle = (minDigit + maxDigit) / 2UL
+                                    val curSubtrahend = UnsignedBigInteger(mutableListOf(middle.toUInt())) * other
+                                    if (curSubtrahend < temporary) {
+                                        digit = middle.toUInt()
+                                        minDigit = middle + 1UL
+                                    } else if (curSubtrahend == temporary) {
+                                        digit = middle.toUInt()
+                                        break
+                                    } else {
+                                        maxDigit = middle - 1UL
                                     }
-                                    current = possible
-                                    digit++
                                 }
-                                number.getOrNull(i)?.let { temporary.add(it) }
+                                val subtrahend = UnsignedBigInteger(mutableListOf(digit)) * other
+                                temporary -= subtrahend
+                                if (temporary == UnsignedBigInteger(0))
+                                    temporary.number.clear()
+                                add(digit)
+                                number.getOrNull(i)?.let { temporary.number.add(it) }
                                 afterFirstDivision = true
                             }
+                            println(this)
                         }
                     }, reverse = false
                 )

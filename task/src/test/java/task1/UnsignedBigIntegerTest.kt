@@ -11,7 +11,7 @@ internal class UnsignedBigIntegerTest {
     fun plus() {
         assertEquals(UnsignedBigInteger(4), UnsignedBigInteger(2) + UnsignedBigInteger(2))
         assertEquals(
-            UnsignedBigInteger(mutableListOf(9u, 0u, 8u, 7u, 6u, 5u, 4u, 3u, 2u, 10u)),
+            UnsignedBigInteger(mutableListOf(908765432u, 10u)),
             UnsignedBigInteger("9087654329") + UnsignedBigInteger(1)
         )
     }
@@ -33,32 +33,64 @@ internal class UnsignedBigIntegerTest {
             UnsignedBigInteger("5"),
             UnsignedBigInteger("1") * UnsignedBigInteger("5")
         )
-        assertEquals(UnsignedBigInteger(mutableListOf(7u, 14u)), UnsignedBigInteger("7") * UnsignedBigInteger("12"))
+        assertEquals(UnsignedBigInteger("84"), UnsignedBigInteger("7") * UnsignedBigInteger("12"))
         assertEquals(
-            UnsignedBigInteger(mutableListOf(1u, UInt.MAX_VALUE - 1u)),
-            UnsignedBigInteger(mutableListOf(UInt.MAX_VALUE)) * UnsignedBigInteger(2)
-        ) // (верхние два проходят, потому что там мы не выходим за границы системы счисления). Здесь мы вышли за границы и нужно добавлять в memory полученное число / base, но не понятно как это сделать не нарушив типы данных
+            UnsignedBigInteger(mutableListOf(1u, 0u)),
+            UnsignedBigInteger("2147483648") * UnsignedBigInteger(2)
+        )
+        assertEquals(
+            UnsignedBigInteger(mutableListOf(40u, 4456u, 68944u, 2334400u)),
+            UnsignedBigInteger(mutableListOf(1u, 100u)) * UnsignedBigInteger(
+                mutableListOf(40u, 456u, 23344u)
+            )
+        )
     }
 
     @Test
     @Tag("16")
     fun div() {
+        assertThrows(ArithmeticException::class.java) { UnsignedBigInteger(100) / UnsignedBigInteger(0) }
+        assertEquals(UnsignedBigInteger(500), UnsignedBigInteger(1000) / UnsignedBigInteger(2))
         assertEquals(
-            UnsignedBigInteger("11"), UnsignedBigInteger("23") / UnsignedBigInteger("2")
+            UnsignedBigInteger("2147483648"),
+            UnsignedBigInteger(mutableListOf(1u, 0u)) / UnsignedBigInteger(2)
         )
-        // деление работает, но очень медленно. на этом примере можно убедиться что действительно работает, но не пойму как оптимизировать правильно работу
+        assertEquals(
+            UnsignedBigInteger(mutableListOf(17u, 3253756577u, 2072977049u)),
+            UnsignedBigInteger(mutableListOf(2344u, 900u, 2345u, 5665u)) / UnsignedBigInteger(
+                mutableListOf(
+                    132u,
+                    48558u
+                )
+            )
+        )
     }
 
     @Test
     @Tag("16")
     fun rem() {
-        assertEquals(UnsignedBigInteger(0), UnsignedBigInteger(20) % UnsignedBigInteger(2)) // то же самое, из-за деления работает медленно
+        assertEquals(
+            UnsignedBigInteger(0),
+            UnsignedBigInteger(20) % UnsignedBigInteger(2)
+        )
     }
 
     @Test
     @Tag("8")
     fun equals() {
         assertEquals(UnsignedBigInteger(123456789), UnsignedBigInteger("123456789"))
+        assertEquals(UnsignedBigInteger(mutableListOf(4294967295u, 1u)), UnsignedBigInteger("42949672951"))
+        assertEquals(
+            UnsignedBigInteger("4294967295000455"), UnsignedBigInteger(
+                mutableListOf(
+                    4294967295u,
+                    0u,
+                    0u,
+                    0u,
+                    455u
+                )
+            )
+        )
     }
 
     @Test
@@ -73,6 +105,6 @@ internal class UnsignedBigIntegerTest {
     @Tag("8")
     fun toInt() {
         assertEquals(123456789, UnsignedBigInteger("123456789").toInt())
-        assertThrows(ArithmeticException::class.java){UnsignedBigInteger("29399034899349349938493392932893").toInt()}
+        assertThrows(ArithmeticException::class.java) { UnsignedBigInteger("29399034899349349938493392932893").toInt() }
     }
 }
