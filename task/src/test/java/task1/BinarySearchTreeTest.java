@@ -1,10 +1,6 @@
 package task1;
 
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
     public class BinarySearchTreeTest {
@@ -36,10 +32,10 @@ import static org.junit.jupiter.api.Assertions.*;
         @Test
         public void deleteTest() {
             BST tester = new BST("7 3 9 2 5 8 10 1 4 6");
-            tester.delete(tester.search(1));
+            tester.delete(1);
             String expectation = "7 3 2 5 4 6 9 8 10";
             assertEquals(expectation, tester.toString());
-            tester.delete(tester.search(5));
+            tester.delete(5);
             expectation = "7 3 2 6 4 9 8 10";
             assertEquals(expectation, tester.toString());
         }

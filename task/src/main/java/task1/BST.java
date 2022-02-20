@@ -1,11 +1,6 @@
 package task1;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class BST {
-
 
     BST(String str) {
         String[] array = str.split(" ");
@@ -76,7 +71,10 @@ public class BST {
         return null;
     }
 
-    public void delete(Node cur) {
+    public void delete(int val){
+        deleteSup(search(val));
+    }
+    private void deleteSup(Node cur) {
         if (cur == null) return;
         boolean isLeft = true;
         if (cur != root) {
@@ -113,7 +111,7 @@ public class BST {
                 cur = cur.left;
             }
             int between = cur.value;
-            delete(cur);
+            deleteSup(cur);
             del.value = between;
         }
     }
@@ -140,4 +138,3 @@ public class BST {
     }
 
 }
-
