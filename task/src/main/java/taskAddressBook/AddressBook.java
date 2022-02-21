@@ -73,7 +73,19 @@ public class AddressBook {
     }
 
     public void remove(String name) {
+        String street = addresses.get(name).street;
+        residentsByStreet.get(street).remove(name);
         addresses.remove(name);
+    }
+
+    public void changeAddress(String name, Address ad) {
+        String oldStreet = addresses.get(name).street;
+        String newStreet = ad.street;
+        residentsByStreet.get(oldStreet).remove(name);
+        if (!residentsByStreet.containsKey(newStreet)) {
+            residentsByStreet.put(newStreet, new ArrayList<>());
+        }
+        this.addresses.put(name, ad);
     }
 
     public Set<String> names() {
@@ -85,27 +97,13 @@ public class AddressBook {
     }
 
     public List<String> findResidents(String street) {
-//        List<String> residents = new ArrayList<>();
-//        for (String name : addresses.keySet()) {
-//            Address ad = addresses.get(name);
-//            if (Objects.equals(ad.street, street)) {
-//                residents.add(name);
-//            }
-//        }
-//        return residents;
+
         if (residentsByStreet.containsKey(street)) return residentsByStreet.get(street);
         else return new ArrayList<>();
     }
 
     public List<String> findResidents(String street, int house) {
-//        List<String> residents = new ArrayList<>();
-//        for (String name : addresses.keySet()) {
-//            Address ad = addresses.get(name);
-//            if (Objects.equals(ad.street, street) && ad.house == house) {
-//                residents.add(name);
-//            }
-//        }
-//        return residents;
+
         if (residentsByStreet.containsKey(street)) {
             List<String> residents = new ArrayList<>();
             for (String name : residentsByStreet.get(street)) {

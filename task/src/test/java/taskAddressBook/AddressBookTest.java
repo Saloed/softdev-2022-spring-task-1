@@ -27,6 +27,16 @@ public class AddressBookTest {
         LinkedHashMap<String, Address> addresses1 = new LinkedHashMap<>();
         assertEquals(book1, new AddressBook(addresses1));
     }
+    @Test
+    public void changeAddress() {
+        LinkedHashMap<String, Address> addresses = new LinkedHashMap<>();
+        addresses.put("Алексеев", new Address("Ветеранов", 73, 82));
+        AddressBook book1 = new AddressBook(addresses);
+        book1.changeAddress("Алексеев", new Address("Ветеранов", 75, 30));
+        LinkedHashMap<String, Address> addresses1 = new LinkedHashMap<>();
+        addresses1.put("Алексеев", new Address("Ветеранов", 75, 30));
+        assertEquals(book1, new AddressBook(addresses1));
+    }
 
     @Test
     public void names() {
