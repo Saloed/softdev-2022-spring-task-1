@@ -11,7 +11,7 @@ import taskAddressBook.AddressBook.Address;
 public class AddressBookTest {
     @Test
     public void add() {
-        AddressBook book1 = new AddressBook(new LinkedHashMap<>());
+        AddressBook book1 = new AddressBook();
         book1.add("Алексеев", new Address("Ветеранов", 73, 82));
         LinkedHashMap<String, Address> addresses = new LinkedHashMap<>();
         addresses.put("Алексеев", new Address("Ветеранов", 73, 82));

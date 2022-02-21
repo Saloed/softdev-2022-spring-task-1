@@ -40,14 +40,36 @@ public class AddressBook {
         } else return false;
     }
 
-    public Map<String, Address> addresses;
+    private Map<String, Address> addresses;
 
-    public AddressBook(LinkedHashMap<String, Address> ads) {
+    private Map<String, List<String>> residentsByStreet;
+
+    public AddressBook(Map<String, Address> ads) {
         this.addresses = ads;
+        this.residentsByStreet = new HashMap<>();
+        if (!addresses.isEmpty()) {
+            for (String name : addresses.keySet()) {
+                String street = addresses.get(name).street;
+                if (!residentsByStreet.containsKey(street)) {
+                    residentsByStreet.put(street, new ArrayList<>());
+                }
+                residentsByStreet.get(street).add(name);
+            }
+        }
+    }
+
+    public AddressBook() {
+        this.addresses = new HashMap<>();
+        this.residentsByStreet = new HashMap<>();
     }
 
     public void add(String name, Address ad) {
         addresses.put(name, ad);
+        String street = ad.street;
+        if (!residentsByStreet.containsKey(street)) {
+            residentsByStreet.put(street, new ArrayList<>());
+        }
+        residentsByStreet.get(street).add(name);
     }
 
     public void remove(String name) {
@@ -63,26 +85,37 @@ public class AddressBook {
     }
 
     public List<String> findResidents(String street) {
-        List<String> Residents = new ArrayList<>();
-        for (String name : addresses.keySet()) {
-            Address ad = addresses.get(name);
-            if (Objects.equals(ad.street, street)) {
-                Residents.add(name);
-            }
-        }
-        return Residents;
+//        List<String> residents = new ArrayList<>();
+//        for (String name : addresses.keySet()) {
+//            Address ad = addresses.get(name);
+//            if (Objects.equals(ad.street, street)) {
+//                residents.add(name);
+//            }
+//        }
+//        return residents;
+        if (residentsByStreet.containsKey(street)) return residentsByStreet.get(street);
+        else return new ArrayList<>();
     }
 
     public List<String> findResidents(String street, int house) {
-        List<String> Residents = new ArrayList<>();
-        for (String name : addresses.keySet()) {
-            Address ad = addresses.get(name);
-            if (Objects.equals(ad.street, street) && ad.house == house) {
-                Residents.add(name);
+//        List<String> residents = new ArrayList<>();
+//        for (String name : addresses.keySet()) {
+//            Address ad = addresses.get(name);
+//            if (Objects.equals(ad.street, street) && ad.house == house) {
+//                residents.add(name);
+//            }
+//        }
+//        return residents;
+        if (residentsByStreet.containsKey(street)) {
+            List<String> residents = new ArrayList<>();
+            for (String name : residentsByStreet.get(street)) {
+                if (addresses.get(name).house == house) {
+                    residents.add(name);
+                }
             }
-        }
-        return Residents;
+            return residents;
+        } else return new ArrayList<>();
     }
-
 }
+
 
