@@ -20,11 +20,6 @@ public class DirectedGraph {
         this.edges = new HashSet<>();
     }
 
-    public DirectedGraph(AbstractMap<String, Vertex> vertices, AbstractSet<Edge> edges) {
-        this.vertices = vertices;
-        this.edges = edges;
-    }
-
     public void addVertex(Vertex v){
         if(v != null) {
             vertices.put(v.getName(), v);
