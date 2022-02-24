@@ -42,7 +42,7 @@ public class AddressBook {
 
     private Map<String, Address> addresses;
 
-    private Map<String, List<String>> residentsByStreet;
+    private Map<String, Map<Integer, Set<String>>> residentsByStreet;
 
     public AddressBook(Map<String, Address> ads) {
         this.addresses = ads;
@@ -50,10 +50,14 @@ public class AddressBook {
         if (!addresses.isEmpty()) {
             for (String name : addresses.keySet()) {
                 String street = addresses.get(name).street;
+                int house = addresses.get(name).house;
                 if (!residentsByStreet.containsKey(street)) {
-                    residentsByStreet.put(street, new ArrayList<>());
+                    residentsByStreet.put(street, new HashMap<>());
                 }
-                residentsByStreet.get(street).add(name);
+                if (!residentsByStreet.get(street).containsKey(house)) {
+                    residentsByStreet.get(street).put(house, new HashSet<>());
+                }
+                residentsByStreet.get(street).get(house).add(name);
             }
         }
     }
@@ -66,25 +70,36 @@ public class AddressBook {
     public void add(String name, Address ad) {
         addresses.put(name, ad);
         String street = ad.street;
+        int house = ad.house;
         if (!residentsByStreet.containsKey(street)) {
-            residentsByStreet.put(street, new ArrayList<>());
+            residentsByStreet.put(street, new HashMap<>());
         }
-        residentsByStreet.get(street).add(name);
+        if (!residentsByStreet.get(street).containsKey(house)) {
+            residentsByStreet.get(street).put(house, new HashSet<>());
+        }
+        residentsByStreet.get(street).get(house).add(name);
     }
 
     public void remove(String name) {
         String street = addresses.get(name).street;
-        residentsByStreet.get(street).remove(name);
+        int house = addresses.get(name).house;
+        residentsByStreet.get(street).get(house).remove(name);
         addresses.remove(name);
     }
 
     public void changeAddress(String name, Address ad) {
         String oldStreet = addresses.get(name).street;
         String newStreet = ad.street;
-        residentsByStreet.get(oldStreet).remove(name);
+        int oldHouse = addresses.get(name).house;
+        int newHouse = ad.house;
+        residentsByStreet.get(oldStreet).get(oldHouse).remove(name);
         if (!residentsByStreet.containsKey(newStreet)) {
-            residentsByStreet.put(newStreet, new ArrayList<>());
+            residentsByStreet.put(newStreet, new HashMap<>());
         }
+        if (!residentsByStreet.get(newStreet).containsKey(newHouse)) {
+            residentsByStreet.get(newStreet).put(newHouse, new HashSet<>());
+        }
+        residentsByStreet.get(newStreet).get(newHouse).add(name);
         this.addresses.put(name, ad);
     }
 
@@ -96,23 +111,21 @@ public class AddressBook {
         return addresses.get(name);
     }
 
-    public List<String> findResidents(String street) {
-
-        if (residentsByStreet.containsKey(street)) return residentsByStreet.get(street);
-        else return new ArrayList<>();
-    }
-
-    public List<String> findResidents(String street, int house) {
-
+    public Set<String> findResidents(String street) {
+        Set<String> residents = new HashSet<>();
         if (residentsByStreet.containsKey(street)) {
-            List<String> residents = new ArrayList<>();
-            for (String name : residentsByStreet.get(street)) {
-                if (addresses.get(name).house == house) {
-                    residents.add(name);
-                }
+            for (Map.Entry<Integer, Set<String>> entry : residentsByStreet.get(street).entrySet()) {
+                residents.addAll(entry.getValue());
             }
             return residents;
-        } else return new ArrayList<>();
+        } else return new HashSet<>();
+    }
+
+    public Set<String> findResidents(String street, int house) {
+
+        if (residentsByStreet.containsKey(street) && residentsByStreet.get(street).containsKey(house))
+            return residentsByStreet.get(street).get(house);
+        else return new HashSet<>();
     }
 }
 
