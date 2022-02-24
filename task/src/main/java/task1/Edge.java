@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class Edge {
 
-    private Vertex start; // Направление от начальной вершины к конечной
-    private Vertex end;
+    private final Vertex start;
+    private final Vertex end;
     private int weight;
 
     public Vertex getStart() { return this.start; }
@@ -38,6 +38,6 @@ public class Edge {
 
     @Override
     public String toString() {
-        return "Edge{ start = " + start + ", end = " + end + ", weight = " + weight + '}';
+        return "Edge{start = " + start + ", end = " + end + ", weight = " + weight + '}';
     }
 }

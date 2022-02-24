@@ -1,14 +1,28 @@
 package task1;
 
+import java.util.AbstractSet;
+import java.util.HashSet;
 import java.util.Objects;
 
 public class Vertex {
 
     private String name;
 
+    public HashSet<Edge> outcomes = new HashSet<>();
+
+    public HashSet<Edge> incomes = new HashSet<>();
+
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
+
+    public AbstractSet<Edge> getOutcomes() {
+        return outcomes;
+    }
+
+    public AbstractSet<Edge> getIncomes() {
+        return incomes;
+    }
 
     public Vertex(String name){
         this.name = name;
@@ -29,6 +43,6 @@ public class Vertex {
 
     @Override
     public String toString() {
-        return "Vertex{ name= " + name + '}';
+        return "Vertex{name = " + name + '}';
     }
 }

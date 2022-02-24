@@ -1,53 +1,65 @@
 package task1;
 
+import java.util.AbstractMap;
+import java.util.AbstractSet;
 import java.util.HashMap;
 import java.util.HashSet;
 
 public class DirectedGraph {
 
-    private HashMap<String, Vertex> vertices; // Вершины
+    private final AbstractMap<String, Vertex> vertices; // Вершины
 
-    private HashSet<Edge> edges; // Дуги
+    private final AbstractSet<Edge> edges; // Дуги
 
-    public HashMap<String, Vertex> getVertices() { return vertices; }
+    public AbstractMap<String, Vertex> getVertices() { return vertices; }
 
-    public HashSet<Edge> getEdges() { return edges; }
+    public AbstractSet<Edge> getEdges() { return edges; }
 
-    public DirectedGraph(HashMap<String, Vertex> vertices, HashSet<Edge> edges) {
+    public DirectedGraph() {
+        this.vertices = new HashMap<>();
+        this.edges = new HashSet<>();
+    }
+
+    public DirectedGraph(AbstractMap<String, Vertex> vertices, AbstractSet<Edge> edges) {
         this.vertices = vertices;
         this.edges = edges;
     }
 
-    public void addVertex(String name){
-        if(name != null) {
-            vertices.put(name, new Vertex(name));
+    public void addVertex(Vertex v){
+        if(v != null) {
+            vertices.put(v.getName(), v);
         }
     }
 
-    public void addEdge(Vertex start, Vertex end,int weight){
-        if(vertices.containsValue(start) && vertices.containsValue(end) && weight > 0) {
-            edges.add(new Edge(start, end, weight));
+    public void addEdge(Edge e){
+        if(e != null) {
+            Vertex startVertex = vertices.get(e.getStart().getName());
+            Vertex endVertex = vertices.get(e.getEnd().getName());
+            if (startVertex != null && endVertex != null && e.getWeight() > 0) { //В условии задачи сказано вес целое положительное число
+                edges.add(e);
+                startVertex.outcomes.add(e);
+                endVertex.incomes.add(e);
+            }
         }
     }
 
     public void removeVertex(Vertex vertex){
-        if(vertices.containsValue(vertex)) {
-            for(Edge e: edges){
-                if(e.getStart().equals(vertex)) edges.remove(e); // Удалить дугу, которая начинается с этой вершины
-                else if(e.getEnd().equals(vertex)) edges.remove(e); // Удалить дугу, которая заканчивается этой вершиной
-            }
-            vertices.remove(vertex);
+        if( vertex != null && vertices.get(vertex.getName()) != null) {
+            edges.removeIf(e -> e.getStart().equals(vertex) || e.getEnd().equals(vertex));
+            vertices.remove(vertex.getName());
         }
     }
 
     public void removeEdge(Edge edge){
         if(edges.contains(edge)) {
+            edge.getStart().outcomes.remove(edge);
+            edge.getEnd().incomes.remove(edge);
             edges.remove(edge);
         }
     }
 
     public void changeName(Vertex vertex, String name){
-        if(vertices.containsValue(vertex) && !vertices.containsKey(name)) { // Проверка существования вершины и занято ли данное имя
+        if(vertices.get(vertex.getName()) != null && !vertices.containsKey(name)) { // Проверка существования вершины и занято ли данное имя
             vertices.remove(vertex.getName());
             vertex.setName(name);
             vertices.put(name, vertex);
@@ -60,34 +72,22 @@ public class DirectedGraph {
         }
     }
 
-    public HashSet<Edge> getOutcomes(String name){
+    public AbstractSet<Edge> getOutcomes(String name){
         if(name != null) {
-            HashSet<Edge> edges = new HashSet();
-            for(Edge e: this.edges){
-                if(e.getStart().getName().equals(name)) {
-                    edges.add(e); // Если дуга начинается с этой вершины, добавляем в список
-                }
-            }
-            return edges;
+            return vertices.get(name).getOutcomes();
         }
         return null;
     }
 
-    public HashSet<Edge> getIncomes(String name){
+    public AbstractSet<Edge> getIncomes(String name){
         if(name != null) {
-            HashSet<Edge> edges = new HashSet();
-            for(Edge e: this.edges){
-                if(e.getEnd().getName().equals(name)) {
-                    edges.add(e); // Если дуга оканчивается этой вершиной, добавляем в список
-                }
-            }
-            return edges;
+            return vertices.get(name).getIncomes();
         }
         return null;
     }
 
     @Override
     public String toString() {
-        return "DirectedGraph{ vertices = " + vertices + ", edges = " + edges + '}';
+        return "DirectedGraph{vertices = " + vertices + ", edges = " + edges + '}';
     }
 }

@@ -10,67 +10,82 @@ class DirectedGraphTest {
 
     @Test
     void getVertices() {
-        HashMap<String, Vertex> vertices = new HashMap();
-        vertices.put("a", new Vertex("a"));
-        vertices.put("b", new Vertex("b"));
-        vertices.put("c", new Vertex("c"));
-        DirectedGraph graph = new DirectedGraph(vertices, new HashSet());
-        HashMap<String, Vertex> expectedVertices = vertices;
+        DirectedGraph graph = new DirectedGraph();
+        Vertex a = new Vertex("a");
+        Vertex b = new Vertex("b");
+        Vertex c = new Vertex("c");
+        graph.addVertex(a);
+        graph.addVertex(b);
+        graph.addVertex(c);
+        HashMap<String, Vertex> expectedVertices = new HashMap<>();
+        expectedVertices.put("a", a);
+        expectedVertices.put("b", b);
+        expectedVertices.put("c", c);
         assertEquals(expectedVertices, graph.getVertices());
     }
 
     @Test
     void getEdges() {
-        HashMap<String, Vertex> vertices = new HashMap();
-        vertices.put("a", new Vertex("a"));
-        vertices.put("b", new Vertex("b"));
-        vertices.put("c", new Vertex("c"));
-        HashSet<Edge> edges = new HashSet();
-        edges.add(new Edge(vertices.get("a"), vertices.get("b"), 2));
-        edges.add(new Edge(vertices.get("b"), vertices.get("c"), 3));
-        edges.add(new Edge(vertices.get("c"), vertices.get("a"), 4));
-        DirectedGraph graph = new DirectedGraph(vertices, edges);
-        HashSet<Edge> expectedEdges = edges;
-        assertEquals(edges, graph.getEdges());
+        DirectedGraph graph = new DirectedGraph();
+        Vertex a = new Vertex("a");
+        Vertex b = new Vertex("b");
+        Vertex c = new Vertex("c");
+        graph.addVertex(a);
+        graph.addVertex(b);
+        graph.addVertex(c);
+        Edge ac = new Edge(a, b, 2);
+        Edge bc = new Edge(a, c, 3);
+        Edge ca = new Edge(c, a, 4);
+        graph.addEdge(ac);
+        graph.addEdge(bc);
+        graph.addEdge(ca);
+        HashSet<Edge> expectedEdges = new HashSet<>();
+        expectedEdges.add(ac);
+        expectedEdges.add(bc);
+        expectedEdges.add(ca);
+        assertEquals(expectedEdges, graph.getEdges());
     }
 
     @Test
     void getOutcomes() {
-        HashMap<String, Vertex> vertices = new HashMap();
-        vertices.put("a", new Vertex("a"));
-        vertices.put("b", new Vertex("b"));
-        vertices.put("c", new Vertex("c"));
-        HashSet<Edge> edges = new HashSet();
-        Edge ab = new Edge(vertices.get("a"), vertices.get("b"), 2);
-        Edge ac = new Edge(vertices.get("a"), vertices.get("c"), 3);
-        Edge ca = new Edge(vertices.get("c"), vertices.get("a"), 4);
-        edges.add(ab);
-        edges.add(ac);
-        edges.add(ca);
-        DirectedGraph graph = new DirectedGraph(vertices, edges);
-        HashSet<Edge> expectedOutcome = new HashSet();
-        expectedOutcome.add(ab);
-        expectedOutcome.add(ac);
-        assertEquals(expectedOutcome, graph.getOutcomes("a"));
+        DirectedGraph graph = new DirectedGraph();
+        Vertex a = new Vertex("a");
+        Vertex b = new Vertex("b");
+        Vertex c = new Vertex("c");
+        graph.addVertex(a);
+        graph.addVertex(b);
+        graph.addVertex(c);
+        Edge ac = new Edge(a, b, 2);
+        Edge bc = new Edge(a, c, 3);
+        Edge ca = new Edge(c, a, 4);
+        graph.addEdge(ac);
+        graph.addEdge(bc);
+        graph.addEdge(ca);
+        HashSet<Edge> expectedOutcomes = new HashSet<>();
+        expectedOutcomes.add(ac);
+        expectedOutcomes.add(bc);
+        assertEquals(expectedOutcomes, graph.getOutcomes("a"));
+
     }
 
     @Test
     void getIncomes() {
-        HashMap<String, Vertex> vertices = new HashMap();
-        vertices.put("a", new Vertex("a"));
-        vertices.put("b", new Vertex("b"));
-        vertices.put("c", new Vertex("c"));
-        HashSet<Edge> edges = new HashSet();
-        Edge ac = new Edge(vertices.get("a"), vertices.get("c"), 2);
-        Edge bc = new Edge(vertices.get("b"), vertices.get("c"), 3);
-        Edge ca = new Edge(vertices.get("c"), vertices.get("a"), 4);
-        edges.add(ac);
-        edges.add(bc);
-        edges.add(ca);
-        DirectedGraph graph = new DirectedGraph(vertices, edges);
-        HashSet<Edge> expectedIutcome = new HashSet();
-        expectedIutcome.add(ac);
-        expectedIutcome.add(bc);
-        assertEquals(expectedIutcome, graph.getIncomes("c"));
+        DirectedGraph graph = new DirectedGraph();
+        Vertex a = new Vertex("a");
+        Vertex b = new Vertex("b");
+        Vertex c = new Vertex("c");
+        graph.addVertex(a);
+        graph.addVertex(b);
+        graph.addVertex(c);
+        Edge ac = new Edge(a, c, 2);
+        Edge bc = new Edge(b, c, 3);
+        Edge ca = new Edge(c, a, 4);
+        graph.addEdge(ac);
+        graph.addEdge(bc);
+        graph.addEdge(ca);
+        HashSet<Edge> expectedIncomes = new HashSet<>();
+        expectedIncomes.add(ac);
+        expectedIncomes.add(bc);
+        assertEquals(expectedIncomes, graph.getIncomes("c"));
     }
 }
