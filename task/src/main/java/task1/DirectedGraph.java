@@ -1,84 +1,84 @@
 package task1;
 
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.HashMap;
-import java.util.HashSet;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 public class DirectedGraph {
 
-    private final AbstractMap<String, Vertex> vertices; // Вершины
+    private final Map<String, Vertex> vertices; // Вершины
 
-    private final AbstractSet<Edge> edges; // Дуги
+    private final Set<Edge> edges; // Дуги
 
-    public AbstractMap<String, Vertex> getVertices() { return vertices; }
+    public Map<String, Vertex> getVertices() { return vertices; }
 
-    public AbstractSet<Edge> getEdges() { return edges; }
+    public Set<Edge> getEdges() { return edges; }
 
     public DirectedGraph() {
-        this.vertices = new HashMap<>();
-        this.edges = new HashSet<>();
+        vertices = null;
+        edges = null;
     }
 
-    public void addVertex(Vertex v){
-        if(v != null) {
-            vertices.put(v.getName(), v);
+    public void addVertex(@NotNull Vertex v){
+        vertices.put(v.getName(), v);
+    }
+
+    public void addEdge(@NotNull Edge e){
+        @NotNull Vertex startVertex = vertices.get(e.getStart().getName());
+        @NotNull Vertex endVertex = vertices.get(e.getEnd().getName());
+        if (e.getWeight() > 0) { //В условии задачи сказано вес целое положительное число
+            edges.add(e);
+            startVertex.outcomes.add(e);
+            endVertex.incomes.add(e);
+        } else {
+            System.out.println("Вес дуги отрицательный.");
         }
     }
 
-    public void addEdge(Edge e){
-        if(e != null) {
-            Vertex startVertex = vertices.get(e.getStart().getName());
-            Vertex endVertex = vertices.get(e.getEnd().getName());
-            if (startVertex != null && endVertex != null && e.getWeight() > 0) { //В условии задачи сказано вес целое положительное число
-                edges.add(e);
-                startVertex.outcomes.add(e);
-                endVertex.incomes.add(e);
-            }
-        }
-    }
-
-    public void removeVertex(Vertex vertex){
-        if( vertex != null && vertices.get(vertex.getName()) != null) {
-            edges.removeIf(e -> e.getStart().equals(vertex) || e.getEnd().equals(vertex));
+    public void removeVertex(@NotNull Vertex vertex){
+        if(vertices.get(vertex.getName()) != null) {
+            edges.removeAll(vertex.getIncomes());
+            edges.removeAll(vertex.getOutcomes());
             vertices.remove(vertex.getName());
+        }  else {
+            System.out.println("Данная вершина в графе не содержится.");
         }
     }
 
-    public void removeEdge(Edge edge){
+    public void removeEdge(@NotNull Edge edge){
         if(edges.contains(edge)) {
             edge.getStart().outcomes.remove(edge);
             edge.getEnd().incomes.remove(edge);
             edges.remove(edge);
+        } else {
+            System.out.println("Данная дуга в графе не содержится.");
         }
     }
 
-    public void changeName(Vertex vertex, String name){
+    public void changeName(@NotNull Vertex vertex,@NotNull String name){
         if(vertices.get(vertex.getName()) != null && !vertices.containsKey(name)) { // Проверка существования вершины и занято ли данное имя
             vertices.remove(vertex.getName());
             vertex.setName(name);
             vertices.put(name, vertex);
+        } else {
+            System.out.println("Не удалось изменить имя вершины.");
         }
     }
 
-    public void changeWeight(Edge edge, int weight){
-        if(edge != null && weight > 0) {
+    public void changeWeight(@NotNull Edge edge, int weight){
+        if(weight > 0) {
             edge.setWeight(weight);
+        } else {
+             System.out.println("Вес дуги отрицательный.");
         }
     }
 
-    public AbstractSet<Edge> getOutcomes(String name){
-        if(name != null) {
-            return vertices.get(name).getOutcomes();
-        }
-        return null;
+    public Set<Edge> getOutcomes(@NotNull String name){
+        return vertices.get(name).getOutcomes();
     }
 
-    public AbstractSet<Edge> getIncomes(String name){
-        if(name != null) {
-            return vertices.get(name).getIncomes();
-        }
-        return null;
+    public Set<Edge> getIncomes(@NotNull String name){
+        return vertices.get(name).getIncomes();
     }
 
     @Override

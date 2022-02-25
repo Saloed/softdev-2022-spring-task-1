@@ -1,31 +1,31 @@
 package task1;
 
-import java.util.AbstractSet;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
 public class Vertex {
 
     private String name;
 
-    public HashSet<Edge> outcomes = new HashSet<>();
+    public Set<Edge> outcomes;
 
-    public HashSet<Edge> incomes = new HashSet<>();
+    public Set<Edge> incomes;
 
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
 
-    public AbstractSet<Edge> getOutcomes() {
+    public Set<Edge> getOutcomes() {
         return outcomes;
     }
 
-    public AbstractSet<Edge> getIncomes() {
+    public Set<Edge> getIncomes() {
         return incomes;
     }
 
     public Vertex(String name){
         this.name = name;
+        outcomes = null;
+        incomes = null;
     }
 
     @Override
