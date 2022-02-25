@@ -1,6 +1,8 @@
 package task1;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class Vertex {
 
@@ -24,8 +26,8 @@ public class Vertex {
 
     public Vertex(String name){
         this.name = name;
-        outcomes = null;
-        incomes = null;
+        outcomes = new HashSet<>();
+        incomes = new HashSet<>();
     }
 
     @Override

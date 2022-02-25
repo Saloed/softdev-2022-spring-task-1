@@ -15,23 +15,29 @@ public class DirectedGraph {
     public Set<Edge> getEdges() { return edges; }
 
     public DirectedGraph() {
-        vertices = null;
-        edges = null;
+        vertices = new HashMap<>();
+        edges = new HashSet<>();
     }
 
     public void addVertex(@NotNull Vertex v){
         vertices.put(v.getName(), v);
     }
 
-    public void addEdge(@NotNull Edge e){
-        @NotNull Vertex startVertex = vertices.get(e.getStart().getName());
-        @NotNull Vertex endVertex = vertices.get(e.getEnd().getName());
+    public void addEdge(@NotNull Edge e) {
+        Vertex startVertex = vertices.get(e.getStart().getName());
+        Vertex endVertex = vertices.get(e.getEnd().getName());
+        if(startVertex == null){
+            throw new NullPointerException("Вершина, с которой начинается дуга, не содержится в графе.");
+        }
+        if(endVertex == null){
+            throw new NullPointerException("Вершина, которой заканчивается дуга, не содержится в графе.");
+        }
         if (e.getWeight() > 0) { //В условии задачи сказано вес целое положительное число
             edges.add(e);
             startVertex.outcomes.add(e);
             endVertex.incomes.add(e);
-        } else {
-            System.out.println("Вес дуги отрицательный.");
+        }else{
+            throw new IllegalArgumentException("Вес не может быть отрицательный.");
         }
     }
 
@@ -41,7 +47,7 @@ public class DirectedGraph {
             edges.removeAll(vertex.getOutcomes());
             vertices.remove(vertex.getName());
         }  else {
-            System.out.println("Данная вершина в графе не содержится.");
+            throw new NullPointerException("Данная вершина в графе не содержится.");
         }
     }
 
@@ -51,7 +57,7 @@ public class DirectedGraph {
             edge.getEnd().incomes.remove(edge);
             edges.remove(edge);
         } else {
-            System.out.println("Данная дуга в графе не содержится.");
+            throw new NullPointerException("Данная дуга в графе не содержится.");
         }
     }
 
@@ -61,7 +67,7 @@ public class DirectedGraph {
             vertex.setName(name);
             vertices.put(name, vertex);
         } else {
-            System.out.println("Не удалось изменить имя вершины.");
+            throw new NullPointerException("Не удалось изменить имя вершины.");
         }
     }
 
@@ -69,8 +75,9 @@ public class DirectedGraph {
         if(weight > 0) {
             edge.setWeight(weight);
         } else {
-             System.out.println("Вес дуги отрицательный.");
+            throw new IllegalArgumentException("Вес не может быть отрицательный.");
         }
+
     }
 
     public Set<Edge> getOutcomes(@NotNull String name){
