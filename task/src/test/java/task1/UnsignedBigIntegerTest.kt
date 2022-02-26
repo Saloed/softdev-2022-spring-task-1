@@ -3,6 +3,7 @@ package task1
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import java.math.BigInteger
 
 internal class UnsignedBigIntegerTest {
 
@@ -11,7 +12,7 @@ internal class UnsignedBigIntegerTest {
     fun plus() {
         assertEquals(UnsignedBigInteger(4), UnsignedBigInteger(2) + UnsignedBigInteger(2))
         assertEquals(
-            UnsignedBigInteger(mutableListOf(908765432u, 10u)),
+            UnsignedBigInteger("9087654330"),
             UnsignedBigInteger("9087654329") + UnsignedBigInteger(1)
         )
     }
@@ -79,18 +80,7 @@ internal class UnsignedBigIntegerTest {
     @Tag("8")
     fun equals() {
         assertEquals(UnsignedBigInteger(123456789), UnsignedBigInteger("123456789"))
-        assertEquals(UnsignedBigInteger(mutableListOf(4294967295u, 1u)), UnsignedBigInteger("42949672951"))
-        assertEquals(
-            UnsignedBigInteger("4294967295000455"), UnsignedBigInteger(
-                mutableListOf(
-                    4294967295u,
-                    0u,
-                    0u,
-                    0u,
-                    455u
-                )
-            )
-        )
+        assertEquals(UnsignedBigInteger(mutableListOf(9u, 4294967287u)), UnsignedBigInteger("42949672951"))
     }
 
     @Test
@@ -106,5 +96,15 @@ internal class UnsignedBigIntegerTest {
     fun toInt() {
         assertEquals(123456789, UnsignedBigInteger("123456789").toInt())
         assertThrows(ArithmeticException::class.java) { UnsignedBigInteger("29399034899349349938493392932893").toInt() }
+    }
+
+    fun UnsignedBigInteger.toBigInteger() = BigInteger("$this")
+
+    @Test
+    fun test() {
+        val value = "16414891648916498218168937819263016316213221321"
+        val actual = UnsignedBigInteger(value) * UnsignedBigInteger(value)
+        val expected = BigInteger(value) * BigInteger(value)
+        assertEquals(actual.toBigInteger(), expected)
     }
 }
