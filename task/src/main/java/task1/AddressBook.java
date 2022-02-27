@@ -4,68 +4,121 @@ import java.util.*;
 
 public class AddressBook {
 
-    private final Map<String, String> addresses;
+    public static class Address {
+        private final String street;
+        private final int house;
+        private final int flat;
 
-    public AddressBook(HashMap<String, String> book) {
-        this.addresses = book;
+        public Address(String str, int h, int fl) {
+            this.street = str;
+            this.house = h;
+            this.flat = fl;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (obj == null) return false;
+            if (obj.getClass().equals(this.getClass())) {
+                Address other = (Address) obj;
+                return Objects.equals(this.street, other.street) && this.house == other.house && this.flat == other.flat;
+            } else return false;
+        }
+
+        @Override
+        public String toString() {
+            return (street + ", " + house + ", " + flat);
+        }
     }
 
-    public Map addPair(Map<String, String> book) {
-        addresses.putAll(book);
-        return addresses;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null) return false;
+        if (obj.getClass().equals(this.getClass())) {
+            AddressBook other = (AddressBook) obj;
+            return this.addresses.equals(other.addresses);
+        } else return false;
     }
 
-    public Map deleteAddress(String surname) {
+    private Map<String, Address> addresses;
+    private final Map<String, Map<Integer, Set<String>>> inhabitants = new HashMap<>();
+
+    public void setMap(Map adr) {
+        addresses = adr;
+        if (!addresses.isEmpty())
+        for (Map.Entry<String, Address> i: addresses.entrySet()) {
+            String surname = i.getKey();
+            Address address = i.getValue();
+            setInhabitants(surname, address);
+        }
+    }
+
+    public void setInhabitants(String sur, Address adr) {
+        if (!inhabitants.containsKey(adr.street)) {
+            Set<String> inh = new HashSet<>();
+            inh.add(sur);
+            Map<Integer, Set<String>> matches = new HashMap<>();
+            matches.put(adr.house, inh);
+            inhabitants.put(adr.street, matches);
+        } if (inhabitants.get(adr.street).containsKey(adr.house)) {
+            Set<String> inh = inhabitants.get(adr.street).get(adr.house);
+            inh.add(sur);
+            Map<Integer, Set<String>> matches = new HashMap<>();
+            matches.put(adr.house, inh);
+            inhabitants.put(adr.street, matches);
+        } else {
+            Set<String> inh = new HashSet<>();
+            inh.add(sur);
+            inhabitants.get(adr.street).put(adr.house, inh);
+        }
+    }
+
+    public void addPair(String surname, Address adr) {
+        addresses.put(surname, adr);
+        setInhabitants(surname, adr);
+    }
+
+    public void deleteAddress(String surname) {
+        String street = addresses.get(surname).street;
+        int house = addresses.get(surname).house;
         addresses.remove(surname);
+        inhabitants.get(street).get(house).remove(surname);
+        if (inhabitants.get(street).get(house).isEmpty()) {
+            inhabitants.get(street).remove(house);
+            if (inhabitants.get(street).isEmpty()) {
+                inhabitants.remove(street);
+            }
+        }
+    }
+
+    public Map changeAddress (String surname, Address adr) {
+        String oldString = addresses.get(surname).street;
+        addresses.put(surname, adr);
+        inhabitants.remove(oldString);
+        setInhabitants(surname, adr);
         return addresses;
     }
 
-    public Map changeAddress (String surname, String newAddress) {
-        addresses.put(surname, newAddress);
-        return addresses;
-    }
-
-    public String getAddress(String surname) {
+    public Address getAddress(String surname) {
         return addresses.get(surname);
     }
 
     public Set getInhabitantByStreet(String street) {
         Set<String> result = new HashSet();
-        for (Map.Entry<String, String> i: addresses.entrySet()) {
-            String address = i.getValue();
-            if (getStreet(address).equals(street)) {
-                result.add(i.getKey());
+        if (inhabitants.containsKey(street)) {
+            for (Map.Entry<Integer, Set<String>> i : inhabitants.get(street).entrySet()) {
+                result.addAll(i.getValue());
             }
         }
         return result;
     }
 
-    public Set getInhabitantByHouse (String house) {
+    public Set getInhabitantByHouse (String street, int house) {
         Set<String> result = new HashSet();
-        for (Map.Entry<String, String> i: addresses.entrySet()) {
-            String address = i.getValue();
-            if (getHouse(address).equals(house)) {
-                result.add(i.getKey());
-            }
+        if (inhabitants.containsKey(street)) {
+            result.addAll(inhabitants.get(street).get(house));
         }
         return result;
-    }
-
-    //Вспомогательные методы для получения улицы или дома из адреса
-    public String getStreet(String address) {
-        //улица Харченко, 34, кв.5
-        String[] parts = address.split(", ");
-        String street = parts[0].split(" ")[1];
-        return street;
-    }
-
-    public String getHouse(String address) {
-        //улица Харченко, 34, кв.5
-        String[] parts = address.split(", ");
-        StringJoiner joiner = new StringJoiner(", ");
-        joiner.add(parts[0].replace("улица ", ""));
-        joiner.add(parts[1]);
-        String house = joiner.toString();
-        return house;
     }
 }
