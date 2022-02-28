@@ -47,8 +47,8 @@ public class AddressBook {
     public AddressBook(Map<String, Address> ads) {
         this.addresses = new HashMap<>();
         this.residentsByStreet = new HashMap<>();
-            for (Map.Entry<String, Address> entry : ads.entrySet()) {
-                this.add(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, Address> entry : ads.entrySet()) {
+            this.add(entry.getKey(), entry.getValue());
         }
     }
 
@@ -92,10 +92,13 @@ public class AddressBook {
 
     public Set<String> findResidents(String street) {
         Set<String> residents = new HashSet<>();
-        for (Map.Entry<Integer, Set<String>> entry : residentsByStreet.get(street).entrySet()) {
-            residents.addAll(entry.getValue());
+        if (residentsByStreet.containsKey(street)) {
+            for (Map.Entry<Integer, Set<String>> entry : residentsByStreet.get(street).entrySet()) {
+                residents.addAll(entry.getValue());
+            }
+            return residents;
         }
-        return residents;
+        return new HashSet<>();
     }
 
     public Set<String> findResidents(String street, int house) {
