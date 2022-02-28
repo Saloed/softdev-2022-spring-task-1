@@ -45,20 +45,10 @@ public class AddressBook {
     private Map<String, Map<Integer, Set<String>>> residentsByStreet;
 
     public AddressBook(Map<String, Address> ads) {
-        this.addresses = ads;
+        this.addresses = new HashMap<>();
         this.residentsByStreet = new HashMap<>();
-        if (!addresses.isEmpty()) {
-            for (String name : addresses.keySet()) {
-                String street = addresses.get(name).street;
-                int house = addresses.get(name).house;
-                if (!residentsByStreet.containsKey(street)) {
-                    residentsByStreet.put(street, new HashMap<>());
-                }
-                if (!residentsByStreet.get(street).containsKey(house)) {
-                    residentsByStreet.get(street).put(house, new HashSet<>());
-                }
-                residentsByStreet.get(street).get(house).add(name);
-            }
+            for (Map.Entry<String, Address> entry : ads.entrySet()) {
+                this.add(entry.getKey(), entry.getValue());
         }
     }
 
@@ -88,19 +78,8 @@ public class AddressBook {
     }
 
     public void changeAddress(String name, Address ad) {
-        String oldStreet = addresses.get(name).street;
-        String newStreet = ad.street;
-        int oldHouse = addresses.get(name).house;
-        int newHouse = ad.house;
-        residentsByStreet.get(oldStreet).get(oldHouse).remove(name);
-        if (!residentsByStreet.containsKey(newStreet)) {
-            residentsByStreet.put(newStreet, new HashMap<>());
-        }
-        if (!residentsByStreet.get(newStreet).containsKey(newHouse)) {
-            residentsByStreet.get(newStreet).put(newHouse, new HashSet<>());
-        }
-        residentsByStreet.get(newStreet).get(newHouse).add(name);
-        this.addresses.put(name, ad);
+        this.remove(name);
+        this.add(name, ad);
     }
 
     public Set<String> names() {
@@ -113,12 +92,10 @@ public class AddressBook {
 
     public Set<String> findResidents(String street) {
         Set<String> residents = new HashSet<>();
-        if (residentsByStreet.containsKey(street)) {
-            for (Map.Entry<Integer, Set<String>> entry : residentsByStreet.get(street).entrySet()) {
-                residents.addAll(entry.getValue());
-            }
-            return residents;
-        } else return new HashSet<>();
+        for (Map.Entry<Integer, Set<String>> entry : residentsByStreet.get(street).entrySet()) {
+            residents.addAll(entry.getValue());
+        }
+        return residents;
     }
 
     public Set<String> findResidents(String street, int house) {
