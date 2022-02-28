@@ -2,6 +2,9 @@ package task1;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BookLibraryTest {
@@ -11,7 +14,7 @@ public class BookLibraryTest {
         BookLibrary schoolLibrary = new BookLibrary();
         schoolLibrary.addBook("451 градус по Фаренгейту", "Бредбери", "Фантастика", "A");
         schoolLibrary.addBook("1984", "Оруэлл", "Фантастика", "A");
-        assertEquals(2, schoolLibrary.Books.size());
+        assertEquals(2, schoolLibrary.mapBooks.size());
     }
 
     @Test
@@ -20,7 +23,7 @@ public class BookLibraryTest {
         schoolLibrary.addBook("451 градус по Фаренгейту", "Бредбери", "Фантастика", "A");
         schoolLibrary.addBook("1984", "Оруэлл", "Фантастика", "A");
         schoolLibrary.removeBook("451 градус по Фаренгейту");
-        assertEquals(1, schoolLibrary.Books.size());
+        assertEquals(1, schoolLibrary.mapBooks.size());
     }
 
     @Test
@@ -28,7 +31,7 @@ public class BookLibraryTest {
         BookLibrary schoolLibrary = new BookLibrary();
         schoolLibrary.addBook("451 градус по Фаренгейту", "Бредбери", "Фантастика", "A");
         schoolLibrary.changeName("451 градус по Фаренгейту", "a book");
-        assertEquals("a book", schoolLibrary.Books.get(0).name);
+        assertEquals("a book", schoolLibrary.mapBooks.get("a book").name);
     }
 
     @Test
@@ -36,7 +39,7 @@ public class BookLibraryTest {
         BookLibrary schoolLibrary = new BookLibrary();
         schoolLibrary.addBook("451 градус по Фаренгейту", "Бредбери", "Фантастика", "A");
         schoolLibrary.changeAuthor("451 градус по Фаренгейту", "NewAuthor");
-        assertEquals("NewAuthor", schoolLibrary.Books.get(0).author);
+        assertEquals("NewAuthor", schoolLibrary.mapBooks.get("451 градус по Фаренгейту").author);
     }
 
     @Test
@@ -44,7 +47,7 @@ public class BookLibraryTest {
         BookLibrary schoolLibrary = new BookLibrary();
         schoolLibrary.addBook("451 градус по Фаренгейту", "Бредбери", "Фантастика", "A");
         schoolLibrary.changeGenre("451 градус по Фаренгейту", "Драма");
-        assertEquals("Драма", schoolLibrary.Books.get(0).genre);
+        assertEquals("Драма", schoolLibrary.mapBooks.get("451 градус по Фаренгейту").genre);
     }
 
     @Test
@@ -52,16 +55,21 @@ public class BookLibraryTest {
         BookLibrary schoolLibrary = new BookLibrary();
         schoolLibrary.addBook("451 градус по Фаренгейту", "Бредбери", "Фантастика", "A");
         schoolLibrary.changeShelf("451 градус по Фаренгейту", "B");
-        assertEquals("B", schoolLibrary.Books.get(0).shelfCode);
+        assertEquals("B", schoolLibrary.mapBooks.get("451 градус по Фаренгейту").shelfCode);
     }
 
-    @Test
+   @Test
     public void testSearch() {
         BookLibrary schoolLibrary = new BookLibrary();
         schoolLibrary.addBook("451 градус по Фаренгейту", "Бредбери", "Фантастика", "A");
         schoolLibrary.addBook("1984", "Оруэлл", "Фантастика", "A");
         schoolLibrary.addBook("Портрет Дориана Грея", "Оскар Уайльд", "Фантастика", "B");
-        assertEquals("451 градус по Фаренгейту" + "1984", schoolLibrary.search("", "", "Фантастика", "A"));
-        assertEquals("Портрет Дориана Грея", schoolLibrary.search("Портрет Дориана", "Оскар Уайльд", "", ""));
+        List<BookLibrary.Book> list1 = new ArrayList<>();
+        list1.add(schoolLibrary.mapBooks.get("1984"));
+        list1.add(schoolLibrary.mapBooks.get("451 градус по Фаренгейту"));
+        List<BookLibrary.Book> list2 = new ArrayList<>();
+        list2.add(schoolLibrary.mapBooks.get("Портрет Дориана Грея"));
+        assertEquals(list2, schoolLibrary.search("Портрет Дориана", "Оскар Уайльд", "", ""));
+        assertEquals(list1, schoolLibrary.search("", "", "Фантастика", "A"));
     }
 }

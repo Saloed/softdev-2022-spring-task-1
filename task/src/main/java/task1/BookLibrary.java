@@ -1,13 +1,16 @@
 package task1;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BookLibrary {
 
-    ArrayList<Book> Books;
+    Map<String, Book> mapBooks;
 
     BookLibrary() {
-        Books = new ArrayList<>(0);
+        mapBooks = new HashMap<>();
     }
 
     public static class Book {
@@ -15,82 +18,56 @@ public class BookLibrary {
         public String author;
         public String genre;
         public String shelfCode;
-        private final String list;
 
         private Book(String n, String a, String g, String s) {
             name = n;
             author = a;
             genre = g;
             shelfCode = s;
-            list = "Название: " + n + "\n" + "Автор: " + a + "\n" + "Жанр: " + g + "\n" + "Лежит на полке: " + s + "\n";
         }
 
     }
 
     public void addBook(String name, String author, String genre, String shelf) {
         Book newBook = new Book(name, author, genre, shelf);
-        Books.add(newBook);
+        mapBooks.put(name, newBook);
     }
 
     public void removeBook(String bookName) {
-        for (int i = 0; i < Books.size(); i++) {
-            if (Books.get(i).name.equals(bookName)) {
-                Books.remove(i);
-                break;
-            }
-        }
+        mapBooks.remove(bookName);
     }
 
     public void changeShelf(String bookName, String newShelf) {
-        for (Book book : Books) {
-            if (book.name.equals(bookName)) {
-                book.shelfCode = newShelf;
-                break;
-            }
-        }
+        mapBooks.get(bookName).shelfCode = newShelf;
     }
 
     public void changeName(String bookName, String newName) {
-        for (Book book : Books) {
-            if (book.name.equals(bookName)) {
-                book.name = newName;
-                break;
-            }
-        }
+        mapBooks.get(bookName).name = newName;
+        Book book = mapBooks.get(bookName);
+        mapBooks.remove(bookName);
+        mapBooks.put(newName, book);
     }
 
     public void changeAuthor(String bookName, String newAuthor) {
-        for (Book book : Books) {
-            if (book.name.equals(bookName)) {
-                book.author = newAuthor;
-                break;
-            }
-        }
+        mapBooks.get(bookName).author = newAuthor;
     }
 
     public void changeGenre(String bookName, String newGenre) {
-        for (Book book : Books) {
-            if (book.name.equals(bookName)) {
-                book.genre = newGenre;
-                break;
-            }
-        }
+        mapBooks.get(bookName).genre = newGenre;
     }
 
-    public String search(String bookName, String bookAuthor, String bookGenre, String bookShelf) {
-        StringBuilder found = new StringBuilder();
-        for (Book book : Books) {
+    public List<Book> search(String bookName, String bookAuthor, String bookGenre, String bookShelf) {
+        List<Book> found = new ArrayList<>();
+        for (Book book : mapBooks.values()) {
             boolean n = bookName.equals("");
             boolean a = bookAuthor.equals("");
             boolean g = bookGenre.equals("");
             boolean s = bookShelf.equals("");
             if ((book.name.contains(bookName) || n) && (book.author.equals(bookAuthor) || a) && (book.genre.equals(bookGenre) || g)
                     && (book.shelfCode.equals(bookShelf) || s)) {
-                System.out.println(book.list);
-                found.append(book.name);
+                found.add(book);
             }
         }
-        return found.toString();
+        return found;
     }
-
 }
