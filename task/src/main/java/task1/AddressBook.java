@@ -44,7 +44,7 @@ public class AddressBook {
     private Map<String, Address> addresses;
     private final Map<String, Map<Integer, Set<String>>> inhabitants = new HashMap<>();
 
-    public void setMap(Map adr) {
+    public void setMap(Map<String, Address> adr) {
         addresses = adr;
         if (!addresses.isEmpty())
         for (Map.Entry<String, Address> i: addresses.entrySet()) {
@@ -54,7 +54,7 @@ public class AddressBook {
         }
     }
 
-    public void setInhabitants(String sur, Address adr) {
+    private void setInhabitants(String sur, Address adr) {
         if (!inhabitants.containsKey(adr.street)) {
             Set<String> inh = new HashSet<>();
             inh.add(sur);
@@ -92,7 +92,7 @@ public class AddressBook {
         }
     }
 
-    public Map changeAddress (String surname, Address adr) {
+    public Map<String, Address> changeAddress (String surname, Address adr) {
         String oldString = addresses.get(surname).street;
         addresses.put(surname, adr);
         inhabitants.remove(oldString);
@@ -104,7 +104,7 @@ public class AddressBook {
         return addresses.get(surname);
     }
 
-    public Set getInhabitantByStreet(String street) {
+    public Set<String> getInhabitantByStreet(String street) {
         Set<String> result = new HashSet();
         if (inhabitants.containsKey(street)) {
             for (Map.Entry<Integer, Set<String>> i : inhabitants.get(street).entrySet()) {
@@ -114,7 +114,7 @@ public class AddressBook {
         return result;
     }
 
-    public Set getInhabitantByHouse (String street, int house) {
+    public Set<String> getInhabitantByHouse (String street, int house) {
         Set<String> result = new HashSet();
         if (inhabitants.containsKey(street)) {
             result.addAll(inhabitants.get(street).get(house));
