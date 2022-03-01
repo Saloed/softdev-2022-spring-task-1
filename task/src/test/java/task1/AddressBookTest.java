@@ -13,7 +13,7 @@ import task1.AddressBook.Address;
 public class AddressBookTest {
 
     public Map<String, Address> getBook() {
-        HashMap<String, Address> b1 = new HashMap<>();
+        Map<String, Address> b1 = new HashMap<>();
         b1.put("Сидоров", new Address("Харченко", 16, 23));
         b1.put("Петров", new Address("Харченко", 14, 68));
         return b1;
@@ -32,7 +32,7 @@ public class AddressBookTest {
         AddressBook b1 = new AddressBook();
         b1.setMap(getBook());
         AddressBook check = new AddressBook();
-        HashMap<String, Address> b2 = new HashMap<>();
+        Map<String, Address> b2 = new HashMap<>();
         b2.put("Сидоров", new Address("Харченко", 16, 23));
         b2.put("Петров", new Address("Харченко", 14, 68));
         b2.put("Алексеев", new Address("Матросов", 34, 5));
@@ -46,7 +46,7 @@ public class AddressBookTest {
         AddressBook b1 = new AddressBook();
         b1.setMap(getBook());
         AddressBook check = new AddressBook();
-        HashMap<String, Address> b2 = new HashMap<>();
+        Map<String, Address> b2 = new HashMap<>();
         b2.put("Сидоров", new Address("Харченко", 16, 23));
         b1.deleteAddress("Петров");
         check.setMap(b2);
@@ -57,7 +57,7 @@ public class AddressBookTest {
     public void changeAddress() {
         AddressBook b1 = new AddressBook();
         b1.setMap(getBook());
-        HashMap<String, Address> b2 = new HashMap<>();
+        Map<String, Address> b2 = new HashMap<>();
         b2.put("Сидоров", new Address("Харченко", 16, 23));
         b2.put("Петров", new Address("Звездная", 18, 15));
         assertEquals(b2, b1.changeAddress("Петров", new Address("Звездная", 18, 15)));
