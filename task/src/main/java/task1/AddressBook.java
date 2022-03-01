@@ -80,14 +80,16 @@ public class AddressBook {
     }
 
     public void deleteAddress(String surname) {
-        String street = addresses.get(surname).street;
-        int house = addresses.get(surname).house;
-        addresses.remove(surname);
-        inhabitants.get(street).get(house).remove(surname);
-        if (inhabitants.get(street).get(house).isEmpty()) {
-            inhabitants.get(street).remove(house);
-            if (inhabitants.get(street).isEmpty()) {
-                inhabitants.remove(street);
+        if (addresses.containsKey(surname)) {
+            String street = addresses.get(surname).street;
+            int house = addresses.get(surname).house;
+            addresses.remove(surname);
+            inhabitants.get(street).get(house).remove(surname);
+            if (inhabitants.get(street).get(house).isEmpty()) {
+                inhabitants.get(street).remove(house);
+                if (inhabitants.get(street).isEmpty()) {
+                    inhabitants.remove(street);
+                }
             }
         }
     }

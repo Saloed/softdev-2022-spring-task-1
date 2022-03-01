@@ -6,12 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import task1.AddressBook.Address;
 
 public class AddressBookTest {
 
-    public HashMap<String, Address> getBook() {
+    public Map<String, Address> getBook() {
         HashMap<String, Address> b1 = new HashMap<>();
         b1.put("Сидоров", new Address("Харченко", 16, 23));
         b1.put("Петров", new Address("Харченко", 14, 68));
