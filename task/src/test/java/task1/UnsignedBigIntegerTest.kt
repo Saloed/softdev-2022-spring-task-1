@@ -98,7 +98,7 @@ internal class UnsignedBigIntegerTest {
         assertThrows(ArithmeticException::class.java) { UnsignedBigInteger("29399034899349349938493392932893").toInt() }
     }
 
-    fun UnsignedBigInteger.toBigInteger() = BigInteger("$this")
+    private fun UnsignedBigInteger.toBigInteger() = BigInteger("$this")
 
     @Test
     fun test() {
@@ -107,4 +107,60 @@ internal class UnsignedBigIntegerTest {
         val expected = BigInteger(value) * BigInteger(value)
         assertEquals(actual.toBigInteger(), expected)
     }
+
+    @Test
+    fun compareBigIntegerTimes() {
+        val values = listOf(Pair("1", "6"), Pair("128594939283912849039", "24553"), Pair("0", "1"))
+
+        for (i in values) {
+            assertEquals(
+                (UnsignedBigInteger(i.first) * UnsignedBigInteger(i.second)).toBigInteger(),
+                BigInteger(i.first) *
+                        BigInteger(i.second)
+            )
+        }
+    }
+
+    @Test
+    fun compareBigIntegerPlus() {
+        val values = listOf(
+            Pair("28349849384923929392099294030", "0"),
+            Pair("283493", "399")
+        )
+
+        for (i in values) {
+            assertEquals(
+                (UnsignedBigInteger(i.first) + UnsignedBigInteger(i.second)).toBigInteger(),
+                BigInteger(i.first) + BigInteger(i.second)
+            )
+        }
+    }
+
+    @Test
+    fun compareBigIntegerDiv() {
+        val values = listOf(
+            Pair("928349438493293", "1"),
+            Pair("928349438493293", "928349438493293"),
+            Pair("24354354343", "234557"),
+        )
+
+        for (i in values) {
+            assertEquals(
+                (UnsignedBigInteger(i.first) / UnsignedBigInteger(i.second)).toBigInteger(),
+                BigInteger(i.first) / BigInteger(i.second)
+            )
+        }
+    }
+
+    @Test
+    fun compareBigIntegerMinus() {
+        val values = listOf(Pair("2754397", "238"), Pair("1", "1"), Pair("293495403894992939", "999999999999"))
+        for (i in values) {
+            assertEquals(
+                (UnsignedBigInteger(i.first) - UnsignedBigInteger(i.second)).toBigInteger(),
+                BigInteger(i.first) - BigInteger(i.second)
+            )
+        }
+    }
+
 }
