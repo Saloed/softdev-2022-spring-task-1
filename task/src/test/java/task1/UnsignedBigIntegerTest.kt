@@ -115,8 +115,7 @@ internal class UnsignedBigIntegerTest {
         for (i in values) {
             assertEquals(
                 (UnsignedBigInteger(i.first) * UnsignedBigInteger(i.second)).toBigInteger(),
-                BigInteger(i.first) *
-                        BigInteger(i.second)
+                BigInteger(i.first) * BigInteger(i.second)
             )
         }
     }
