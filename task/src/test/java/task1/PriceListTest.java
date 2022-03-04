@@ -1,68 +1,52 @@
 package task1;
 
-
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 
 public class PriceListTest {
     @Test
-    public void addTest() {
-        String products = "Молоко; Хлеб; Сало; Яблоки; Бананы";
-        String prices = "60.50; 40.0; 150.87; 35.82; 53.99";
-        PriceList tester = new PriceList(products, prices);
-        tester.add("Рыба", 354.21);
-        String exp = "Молоко 60.5; Хлеб 40.0; Сало 150.87; Яблоки 35.82; Бананы 53.99; Рыба 354.21";
-        assertEquals(exp, tester.toString());
-    }
-
-
-    @Test
-    public void priceReplaceTest() {
-        String products = "Молоко; Хлеб; Сало; Яблоки; Бананы";
-        String prices = "60.50; 40.0; 150.87; 35.82; 53.99";
-        PriceList tester = new PriceList(products, prices);
-        tester.replacePriceById(1, 51.21);
-        String exp = "Молоко 60.5; Хлеб 51.21; Сало 150.87; Яблоки 35.82; Бананы 53.99";
-        assertEquals(exp, tester.toString());
-        tester.replacePriceByName("Молоко", 62.32);
-        exp = "Молоко 62.32; Хлеб 51.21; Сало 150.87; Яблоки 35.82; Бананы 53.99";
-        assertEquals(exp, tester.toString());
-
+    void addElementTest() { 
+        PriceList pl = new PriceList();
+        pl.addElement("Phone", 50000.0);
+        //надо придумать как получать айди
+        assertEquals("Phone", pl.getElement(pl.getId("Phone")).getName());
     }
 
     @Test
-    public void deleteTest() {
-        String products = "Молоко; Хлеб; Сало; Яблоки; Бананы";
-        String prices = "60.50; 40.0; 150.87; 35.82; 53.99";
-        PriceList tester = new PriceList(products, prices);
-        tester.deleteByName("Хлеб");
-        String exp = "Молоко 60.5; Сало 150.87; Яблоки 35.82; Бананы 53.99";
-        assertEquals(exp, tester.toString());
-        tester.deleteById(2);
-        exp = "Молоко 60.5; Сало 150.87; Бананы 53.99";
-        assertEquals(exp, tester.toString());
+    void replaceCostTest() {
+        PriceList pl = new PriceList();
+        pl.addElement("Phone", 50000.0);
+        //надо придумать как получать айди
+        pl.replaceCost(pl.getId("Phone"),60000.0);
+        assertEquals(60000.0, pl.getElement(pl.getId("Phone")).getCost());
+    }
+
+    @Test
+    void replaceNameTest() {
+        PriceList pl = new PriceList();
+        pl.addElement("Phone", 50000.0);
+        //надо придумать как получать айди
+        pl.replaceName(pl.getId("Phone"),"Phone for teenagers");
+        assertEquals("Phone for teenagers",pl.getElement(pl.getId("Phone for teenagers")).getName());
+    }
+
+    @Test
+    void deleteItemTest() {
+        PriceList pl = new PriceList();
+        pl.addElement("Phone", 50000.0);
+        int idBy = pl.getId("Phone");
+        pl.deleteItem(pl.getId("Phone"));
+        assertFalse(pl.getListOfPrices().containsKey(idBy));
 
     }
 
     @Test
-    public void replaceTest() {
-        String products = "Молоко; Хлеб; Сало; Яблоки; Бананы";
-        String prices = "60.50; 40.0; 150.87; 35.82; 53.99";
-        PriceList tester = new PriceList(products, prices);
-        tester.replacePriceById(2, "Хамон");
-        String exp = "Молоко 60.5; Хлеб 40.0; Хамон 150.87; Яблоки 35.82; Бананы 53.99";
-        assertEquals(exp, tester.toString());
-        tester.replaceNameByName("Молоко", "Молоко безлактозное");
-        exp = "Молоко безлактозное 60.5; Хлеб 40.0; Хамон 150.87; Яблоки 35.82; Бананы 53.99";
-        assertEquals(exp, tester.toString());
-
-    }
-    @Test
-    public void purchaseAmountTest(){
-        String products = "Молоко; Хлеб; Сало; Яблоки; Бананы";
-        String prices = "60.50; 40.0; 150.87; 35.87; 53.99";
-        PriceList tester = new PriceList(products, prices);
-        double exp = 754.35;
-        assertEquals(exp,tester.purchaseAmount(2,5));
+    void totalTest() {
+        PriceList pl = new PriceList();
+        pl.addElement("Apple", 500.00);
+        assertEquals(1500,pl.total(pl.getId("Apple"),3));
     }
 }
