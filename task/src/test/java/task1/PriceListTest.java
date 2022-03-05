@@ -11,7 +11,6 @@ public class PriceListTest {
     void addElementTest() { 
         PriceList pl = new PriceList();
         pl.addElement("Phone", 50000.0);
-        //надо придумать как получать айди
         assertEquals("Phone", pl.getElement(pl.getId("Phone")).getName());
     }
 
@@ -19,7 +18,6 @@ public class PriceListTest {
     void replaceCostTest() {
         PriceList pl = new PriceList();
         pl.addElement("Phone", 50000.0);
-        //надо придумать как получать айди
         pl.replaceCost(pl.getId("Phone"),60000.0);
         assertEquals(60000.0, pl.getElement(pl.getId("Phone")).getCost());
     }
@@ -28,7 +26,6 @@ public class PriceListTest {
     void replaceNameTest() {
         PriceList pl = new PriceList();
         pl.addElement("Phone", 50000.0);
-        //надо придумать как получать айди
         pl.replaceName(pl.getId("Phone"),"Phone for teenagers");
         assertEquals("Phone for teenagers",pl.getElement(pl.getId("Phone for teenagers")).getName());
     }
