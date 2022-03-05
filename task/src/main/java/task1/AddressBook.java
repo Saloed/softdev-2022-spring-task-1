@@ -41,17 +41,21 @@ public class AddressBook {
         } else return false;
     }
 
-    private Map<String, Address> addresses;
+    private final Map<String, Address> addresses;
     private final Map<String, Map<Integer, Set<String>>> inhabitants = new HashMap<>();
 
-    public void setMap(Map<String, Address> adr) {
-        addresses = adr;
+    public AddressBook() {
+        this.addresses = new HashMap<String, Address>();
+    }
+
+    public AddressBook(Map<String, Address> adr) {
+        this.addresses = adr;
         if (!addresses.isEmpty())
-        for (Map.Entry<String, Address> i: addresses.entrySet()) {
-            String surname = i.getKey();
-            Address address = i.getValue();
-            setInhabitants(surname, address);
-        }
+            for (Map.Entry<String, Address> i: addresses.entrySet()) {
+                String surname = i.getKey();
+                Address address = i.getValue();
+                setInhabitants(surname, address);
+            }
     }
 
     private void setInhabitants(String sur, Address adr) {
@@ -64,9 +68,7 @@ public class AddressBook {
         } if (inhabitants.get(adr.street).containsKey(adr.house)) {
             Set<String> inh = inhabitants.get(adr.street).get(adr.house);
             inh.add(sur);
-            Map<Integer, Set<String>> matches = new HashMap<>();
-            matches.put(adr.house, inh);
-            inhabitants.put(adr.street, matches);
+            inhabitants.get(adr.street).get(adr.house).addAll(inh);
         } else {
             Set<String> inh = new HashSet<>();
             inh.add(sur);
@@ -79,22 +81,21 @@ public class AddressBook {
         setInhabitants(surname, adr);
     }
 
-    public void deleteAddress(String surname) {
-        if (addresses.containsKey(surname)) {
-            String street = addresses.get(surname).street;
-            int house = addresses.get(surname).house;
-            addresses.remove(surname);
-            inhabitants.get(street).get(house).remove(surname);
-            if (inhabitants.get(street).get(house).isEmpty()) {
-                inhabitants.get(street).remove(house);
-                if (inhabitants.get(street).isEmpty()) {
-                    inhabitants.remove(street);
-                }
-            }
-        }
+    public Map<String, Address> deleteAddress(String surname) {
+        if (!addresses.containsKey(surname)) return addresses;
+        String street = addresses.get(surname).street;
+        int house = addresses.get(surname).house;
+        addresses.remove(surname);
+        inhabitants.get(street).get(house).remove(surname);
+        if (!inhabitants.get(street).get(house).isEmpty()) return addresses;
+        inhabitants.get(street).remove(house);
+        if (!inhabitants.get(street).isEmpty()) return addresses;
+        inhabitants.remove(street);
+        return addresses;
     }
 
     public Map<String, Address> changeAddress (String surname, Address adr) {
+        if (!addresses.containsKey(surname)) return addresses;
         String oldString = addresses.get(surname).street;
         addresses.put(surname, adr);
         inhabitants.remove(oldString);
