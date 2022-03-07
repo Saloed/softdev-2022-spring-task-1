@@ -1,29 +1,26 @@
 package task1;
 
-public class ticTacToe {
+public class TicTacToe {
     public int size;
-    public String[][] map;
+    public enum Element {X, O, h, v, r, dr}
+    public Element[][] map;
 
-    public ticTacToe(int size) {
+    public TicTacToe(int size) {
         this.size = size;
-        map = new String[size][size];
+        map = new Element[size][size];
     }
 
-    public void addOrClear(int coordinate, String element) {
-        int oY = (coordinate / 10) - 1;
-        int oX = (coordinate % 10) - 1;
-        map[oY][oX] = element;
-    }
+    public void addOrClear(int coordinateX, int coordinateY, Element element) { map[coordinateY-1][coordinateX-1] = element; }
 
-    public int maxLine(String element, String way, int x, int y) {
+    public int maxLine(Element element, Element way, int x, int y) {
         int nowCount = 0;
         int maxCount = 0;
         int dx = 0;
         int dy = 0;
-        if (way.equals("h")) { dx = 1; }
-        if (way.equals("v")) { dy = 1; }
-        if (way.equals("d")) { dx = 1; dy = 1; }
-        if (way.equals("rd")) { dx = 1; dy = -1; y = size - 1; }
+        if (way == Element.h) { dx = 1; }
+        if (way == Element.v) { dy = 1; }
+        if (way == Element.r) { dx = 1; dy = 1; }
+        if (way == Element.dr) { dx = 1; dy = -1; y = size - 1; }
         while (x < size && y < size && y >= 0) {
             if (map[y][x] == element) {
                 nowCount++;
@@ -43,21 +40,21 @@ public class ticTacToe {
         }
         return maxCount;
     }
-    public int calculateLines(String element) {
+    public int calculateLines(Element element) {
         int result = 0;
         for (int i = 0; i < size; i++) {
-            int resultInLineV = maxLine(element, "v", i, 0);
-            int resultInLineH = maxLine(element, "h", 0, i);
+            int resultInLineV = maxLine(element, Element.v, i, 0);
+            int resultInLineH = maxLine(element, Element.h, 0, i);
             if (resultInLineH > resultInLineV) { resultInLineV = resultInLineH; }
             if (resultInLineV > result) { result = resultInLineV; }
         }
         return result;
     }
 
-    public int largestLine(String element) {
+    public int largestLine(Element element) {
         int maxLineForVH = calculateLines(element);
-        int maxD = maxLine(element, "d", 0, 0);
-        int maxRD = maxLine(element, "rd", 0, 0);
+        int maxD = maxLine(element, Element.r, 0, 0);
+        int maxRD = maxLine(element, Element.dr, 0, 0);
         if (maxLineForVH > maxD) { maxD = maxLineForVH; }
         if (maxD > maxRD) { maxRD = maxD; }
         return maxRD;
