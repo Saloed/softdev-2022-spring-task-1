@@ -49,11 +49,12 @@ public class AddressBook {
     }
 
     public AddressBook(Map<String, Address> adr) {
-        this.addresses = adr;
-        if (!addresses.isEmpty())
-            for (Map.Entry<String, Address> i: addresses.entrySet()) {
+        this.addresses = new HashMap<>();
+        if (!adr.isEmpty())
+            for (Map.Entry<String, Address> i: adr.entrySet()) {
                 String surname = i.getKey();
                 Address address = i.getValue();
+                this.addresses.put(surname, address);
                 setInhabitants(surname, address);
             }
     }
