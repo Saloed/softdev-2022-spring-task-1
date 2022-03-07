@@ -77,11 +77,10 @@ public class Trie {
     public void delete(String word) {
         if (search(word)) {
             Node currentNode = root;
-            char lastChar = word.charAt(word.length() - 1);
             for (int i = 0; i < word.length(); i++) {
                 char c = word.charAt(i);
                 Node node = currentNode.children.get(c);
-                if (node.isWordEnd && c == lastChar) {
+                if (node.isWordEnd && i == word.length() - 1) {
                     node.isWordEnd = false;
                 }
                 currentNode = node;
