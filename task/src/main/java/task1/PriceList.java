@@ -15,7 +15,6 @@ public class PriceList<object> {
     }
 
     public void addElement(String name, double price) {
-        if (listOfPrices.containsKey(1 + lastId)) throw new IllegalArgumentException("Такой id уже имеется");
         InfOfProducts info = new InfOfProducts(name, price);
         listOfPrices.put(++lastId, info);
     }
